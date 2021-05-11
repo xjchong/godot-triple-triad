@@ -4,6 +4,7 @@ import com.helloworldramen.tripletriad.tripletriad.models.Board
 import com.helloworldramen.tripletriad.tripletriad.models.Card
 import com.helloworldramen.tripletriad.tripletriad.models.GameState
 import com.helloworldramen.tripletriad.tripletriad.models.Player
+import com.helloworldramen.tripletriad.tripletriad.scenes.board.BoardScene
 import com.helloworldramen.tripletriad.tripletriad.scenes.hand.HandScene
 import godot.Spatial
 import godot.annotation.RegisterClass
@@ -13,8 +14,9 @@ import godot.extensions.getNodeAs
 @RegisterClass
 class GameScene: Spatial() {
 
-	private val hand1: HandScene by lazy { getNodeAs("HandScene1")!! }
-	private val hand2: HandScene by lazy { getNodeAs("HandScene2")!! }
+	private val handScene1: HandScene by lazy { getNodeAs("HandScene1")!! }
+	private val handScene2: HandScene by lazy { getNodeAs("HandScene2")!! }
+	private val boardScene: BoardScene by lazy { getNodeAs("BoardScene")!! }
 
 	@RegisterFunction
 	override fun _ready() {
@@ -26,7 +28,8 @@ class GameScene: Spatial() {
 	}
 
 	fun bind(gameState: GameState) {
-		hand1.bind(gameState.players.first())
-		hand2.bind(gameState.players[1])
+		handScene1.bind(gameState.players.first())
+		handScene2.bind(gameState.players[1])
+		boardScene.bind(gameState.board)
 	}
 }

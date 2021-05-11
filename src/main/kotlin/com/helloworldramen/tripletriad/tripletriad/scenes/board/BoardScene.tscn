@@ -1,0 +1,148 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/card/PlayerCardScene.tscn" type="PackedScene" id=1]
+[ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/board/BoardScene.kt" type="Script" id=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.231373, 0.231373, 0.231373, 1 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="BoardScene" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="Container" type="AspectRatioContainer" parent="."]
+margin_right = 328.0
+margin_bottom = 473.0
+ratio = 0.7
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="Container"]
+margin_top = 2.21428
+margin_right = 328.0
+margin_bottom = 470.786
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="Container/Panel"]
+margin_left = 10.4371
+margin_top = 8.76057
+margin_right = 108.437
+margin_bottom = 155.761
+color = Color( 1, 1, 1, 0.0901961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="Container/Panel"]
+margin_left = 114.437
+margin_top = 8.76057
+margin_right = 212.437
+margin_bottom = 155.761
+color = Color( 1, 1, 1, 0.0901961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect3" type="ColorRect" parent="Container/Panel"]
+margin_left = 218.437
+margin_top = 8.76057
+margin_right = 316.437
+margin_bottom = 155.761
+color = Color( 1, 1, 1, 0.0901961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect4" type="ColorRect" parent="Container/Panel"]
+margin_left = 10.4371
+margin_top = 160.761
+margin_right = 108.437
+margin_bottom = 307.761
+color = Color( 1, 1, 1, 0.0901961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect5" type="ColorRect" parent="Container/Panel"]
+margin_left = 114.437
+margin_top = 160.761
+margin_right = 212.437
+margin_bottom = 307.761
+color = Color( 1, 1, 1, 0.0901961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect6" type="ColorRect" parent="Container/Panel"]
+margin_left = 218.437
+margin_top = 160.761
+margin_right = 316.437
+margin_bottom = 307.761
+color = Color( 1, 1, 1, 0.0901961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect7" type="ColorRect" parent="Container/Panel"]
+margin_left = 10.4371
+margin_top = 312.761
+margin_right = 108.437
+margin_bottom = 459.761
+color = Color( 1, 1, 1, 0.0901961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect8" type="ColorRect" parent="Container/Panel"]
+margin_left = 114.437
+margin_top = 312.761
+margin_right = 212.437
+margin_bottom = 459.761
+color = Color( 1, 1, 1, 0.0901961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect9" type="ColorRect" parent="Container/Panel"]
+margin_left = 218.437
+margin_top = 312.761
+margin_right = 316.437
+margin_bottom = 459.761
+color = Color( 1, 1, 1, 0.0901961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayerCardScene1" parent="Container/Panel" instance=ExtResource( 1 )]
+position = Vector2( 12.5881, 12.1725 )
+
+[node name="PlayerCardScene2" parent="Container/Panel" instance=ExtResource( 1 )]
+position = Vector2( 116.588, 10.1725 )
+
+[node name="PlayerCardScene3" parent="Container/Panel" instance=ExtResource( 1 )]
+position = Vector2( 220.588, 12.1725 )
+
+[node name="PlayerCardScene4" parent="Container/Panel" instance=ExtResource( 1 )]
+position = Vector2( 12.5881, 164.172 )
+
+[node name="PlayerCardScene5" parent="Container/Panel" instance=ExtResource( 1 )]
+position = Vector2( 116.588, 164.172 )
+
+[node name="PlayerCardScene6" parent="Container/Panel" instance=ExtResource( 1 )]
+position = Vector2( 220.588, 164.172 )
+
+[node name="PlayerCardScene7" parent="Container/Panel" instance=ExtResource( 1 )]
+position = Vector2( 12.5881, 316.172 )
+
+[node name="PlayerCardScene8" parent="Container/Panel" instance=ExtResource( 1 )]
+position = Vector2( 116.588, 316.172 )
+
+[node name="PlayerCardScene9" parent="Container/Panel" instance=ExtResource( 1 )]
+position = Vector2( 220.588, 316.172 )
