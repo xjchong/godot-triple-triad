@@ -1,0 +1,29 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Spatial",
+"class": "com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCard",
+"language": "Kotlin",
+"path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/card/PlayerCard.kt"
+} ]
+_global_script_class_icons={
+"com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCard": ""
+}
+
+[application]
+
+config/name="godot-triple-triad"
+run/main_scene="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/card/PlayerCard.tscn"
+config/icon="res://icon.png"
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"
