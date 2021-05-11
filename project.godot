@@ -13,15 +13,21 @@ _global_script_classes=[ {
 "class": "com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCardScene",
 "language": "Kotlin",
 "path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/card/PlayerCardScene.kt"
+}, {
+"base": "Spatial",
+"class": "com_helloworldramen_tripletriad_tripletriad_scenes_hand_HandScene",
+"language": "Kotlin",
+"path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/hand/HandScene.kt"
 } ]
 _global_script_class_icons={
-"com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCardScene": ""
+"com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCardScene": "",
+"com_helloworldramen_tripletriad_tripletriad_scenes_hand_HandScene": ""
 }
 
 [application]
 
 config/name="godot-triple-triad"
-run/main_scene="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/game/Game.tscn"
+run/main_scene="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/game/GameScene.tscn"
 config/icon="res://icon.png"
 
 [rendering]

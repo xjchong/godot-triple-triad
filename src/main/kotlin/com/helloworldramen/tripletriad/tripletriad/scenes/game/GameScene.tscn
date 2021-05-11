@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/hand/HandScene.tscn" type="PackedScene" id=1]
+[ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/hand/HandScene.kt" type="Script" id=2]
+[ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/game/GameScene.kt" type="Script" id=3]
+
+[node name="GameScene" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="HandScene1" parent="." instance=ExtResource( 1 )]
+position = Vector2( 21.0893, 163.212 )
+script = ExtResource( 2 )
+
+[node name="HandScene2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 706.114, 164.731 )
+script = ExtResource( 2 )

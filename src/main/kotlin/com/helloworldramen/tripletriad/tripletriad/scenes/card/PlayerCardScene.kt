@@ -17,7 +17,7 @@ import godot.global.GD
 @RegisterClass
 class PlayerCardScene: Spatial() {
 
-	private val container: AspectRatioContainer by lazy {getNodeAs("Container")!! }
+	private val container: AspectRatioContainer by lazy { getNodeAs("Container")!! }
 	private val colorRect: ColorRect by lazy { getNodeAs(colorRectPath())!! }
 	private val rarityLabel: Label by lazy { getNodeAs(colorRectPath("RarityLabel"))!! }
 	private val typeLabel: Label by lazy { getNodeAs(colorRectPath("TypeLabel"))!! }
@@ -33,10 +33,10 @@ class PlayerCardScene: Spatial() {
 
 	@RegisterFunction
 	override fun _ready() {
-		GD.print("Hello world!")
+//		GD.print("Hello world!")
 
-		val playerCard = PlayerCard(card = Card.AlexanderPrime, playerId = 0, isPlayable = false)
-		bind(playerCard)
+//		val playerCard = PlayerCard(card = Card.AlexanderPrime, playerId = 0, isPlayable = false)
+//		bind(playerCard)
 	}
 
 	fun bind(playerCard: PlayerCard?) {
