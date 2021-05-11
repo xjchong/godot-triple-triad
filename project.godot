@@ -10,18 +10,18 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Spatial",
-"class": "com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCard",
+"class": "com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCardScene",
 "language": "Kotlin",
-"path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/card/PlayerCard.kt"
+"path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/card/PlayerCardScene.kt"
 } ]
 _global_script_class_icons={
-"com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCard": ""
+"com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCardScene": ""
 }
 
 [application]
 
 config/name="godot-triple-triad"
-run/main_scene="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/card/PlayerCard.tscn"
+run/main_scene="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/game/Game.tscn"
 config/icon="res://icon.png"
 
 [rendering]

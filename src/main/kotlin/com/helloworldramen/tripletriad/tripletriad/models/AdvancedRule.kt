@@ -1,0 +1,15 @@
+package com.helloworldramen.tripletriad.tripletriad.models
+
+sealed class AdvancedRule(val name: String)
+object AllOpen : AdvancedRule("All Open")
+object ThreeOpen : AdvancedRule("Three Open")
+object Same : AdvancedRule("Same")
+object SuddenDeath : AdvancedRule("Sudden Death")
+object Plus : AdvancedRule("Plus")
+object Order : AdvancedRule("Order")
+object Chaos : AdvancedRule("Chaos")
+object Reverse : AdvancedRule("Reverse")
+object FallenAce : AdvancedRule("Fallen Ace")
+object Ascension : AdvancedRule("Ascension")
+object Descension : AdvancedRule("Descension")
+object Swap : AdvancedRule("Swap")
