@@ -1,9 +1,6 @@
 package com.helloworldramen.tripletriad.tripletriad.scenes.card
 
-import com.helloworldramen.tripletriad.tripletriad.models.Card
-import com.helloworldramen.tripletriad.tripletriad.models.CardRarity
-import com.helloworldramen.tripletriad.tripletriad.models.CardType
-import com.helloworldramen.tripletriad.tripletriad.models.PlayerCard
+import com.helloworldramen.tripletriad.tripletriad.models.*
 import com.helloworldramen.tripletriad.tripletriad.scenes.utility.Mouseable
 import godot.*
 import godot.annotation.RegisterClass
@@ -15,6 +12,8 @@ import godot.core.Vector2
 import godot.extensions.getNodeAs
 import godot.global.GD
 import godot.signals.signal
+import java.util.Timer
+import kotlin.concurrent.timerTask
 
 @RegisterClass
 class PlayerCardScene: Area2D() {
@@ -55,6 +54,33 @@ class PlayerCardScene: Area2D() {
 	@RegisterFunction
 	fun onMouseExited(parent: Control) {
 		signalPlayerCardExited.emit(this)
+	}
+
+	private var isAnimating: Boolean = false
+	@RegisterFunction
+	fun flip(isHorizontal: Boolean = true, newCard: PlayerCard? = null, onCompletion: (() -> Unit)? = null) {
+		if (isAnimating) return else isAnimating = true
+		val stepDuration = 0.06
+		val stepDelay = (stepDuration * 1000).toLong()
+		val scaleX = if (isHorizontal) 0 else 1
+		val scaleY = if (isHorizontal) 1 else 0
+		tween.interpolateProperty(this, NodePath("scale"), null, Vector2(scaleX, scaleY),
+				stepDuration, easeType = Tween.EASE_OUT)
+		tween.start()
+		Timer().schedule(timerTask {
+			if (newCard == null) {
+				bindUnknown()
+			} else {
+				bind(newCard)
+			}
+			tween.interpolateProperty(this@PlayerCardScene, NodePath("scale"), null,
+					Vector2(1, 1), stepDuration, delay = stepDuration, easeType = Tween.EASE_IN)
+			tween.start()
+		}, stepDelay)
+		Timer().schedule(timerTask {
+			isAnimating = false
+			onCompletion?.invoke()
+		}, stepDelay * 4)
 	}
 
 	@RegisterFunction
@@ -117,6 +143,7 @@ class PlayerCardScene: Area2D() {
 		eastLabel.text = ""
 		southLabel.text = ""
 		westLabel.text = ""
+		colorRect.color = Color.black
 	}
 
 	private fun Int?.getValueString(): String {

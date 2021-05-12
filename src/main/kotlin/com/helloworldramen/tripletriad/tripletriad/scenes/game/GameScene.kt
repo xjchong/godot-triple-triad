@@ -25,27 +25,28 @@ class GameScene: Node2D() {
 
 	private val gameEngine: GameEngine = GameEngine()
 	private val ai: MCTS = MCTS()
+	private var testPlayerCard: PlayerCard = PlayerCard(Card.Bomb, 0, true, false)
 
 	@RegisterFunction
 	override fun _ready() {
 		testCardScene.connect("player_card_entered", this, "on_player_card_entered")
 		testCardScene.connect("player_card_exited", this, "on_player_card_exited")
+		testCardScene.bind(testPlayerCard)
 	}
 
 	private var hoveredCardScene: PlayerCardScene? = null
+	private var grabbedCardScene: PlayerCardScene? = null
 	@RegisterFunction
 	fun onPlayerCardEntered(cardScene: PlayerCardScene) {
 		GD.print("mouse enter $cardScene ${System.currentTimeMillis()}")
 		if (hoveredCardScene == null) {
 			hoveredCardScene = cardScene
-			hoveredCardScene?.highlight()
 		}
 	}
 
 	@RegisterFunction
 	fun onPlayerCardExited(cardScene: PlayerCardScene) {
 		GD.print("mouse exit $cardScene ${System.currentTimeMillis()}")
-		hoveredCardScene?.unhighlight()
 		hoveredCardScene = null
 	}
 
@@ -56,12 +57,32 @@ class GameScene: Node2D() {
 	override fun _input(event: InputEvent) {
 		if (isMousePrimaryPressed && event.isActionReleased("mouse_primary")) {
 			isMousePrimaryPressed = false
+			grabbedCardScene?.unhighlight()
+			grabbedCardScene = null
 		} else if (!isMousePrimaryPressed && event.isActionPressed("mouse_primary")) {
 			isMousePrimaryPressed = true
+			grabbedCardScene = hoveredCardScene
+			grabbedCardScene?.highlight()
 		}
-//
+
 		if (isMousePrimaryPressed && event is InputEventMouseMotion) {
-			hoveredCardScene?.position = hoveredCardScene!!.position + event.relative
+			grabbedCardScene?.position = grabbedCardScene!!.position + event.relative
+		}
+
+		if (event.isActionPressed("ui_up")) {
+			if (grabbedCardScene == null) {
+				testCardScene.flip(false) {
+					testPlayerCard = testPlayerCard.assignedToPlayer((testPlayerCard.playerId + 1) % 2)
+					testCardScene.flip(false, newCard = testPlayerCard)
+				}
+			}
+		} else if (event.isActionPressed("ui_right")) {
+			if (grabbedCardScene == null) {
+				testCardScene.flip {
+					testPlayerCard = testPlayerCard.assignedToPlayer((testPlayerCard.playerId + 1) % 2)
+					testCardScene.flip(newCard = testPlayerCard)
+				}
+			}
 		}
 
 		if (!didRun && event.isActionPressed("ui_accept")) {
