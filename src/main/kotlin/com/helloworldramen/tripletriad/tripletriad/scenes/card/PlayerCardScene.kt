@@ -4,18 +4,24 @@ import com.helloworldramen.tripletriad.tripletriad.models.Card
 import com.helloworldramen.tripletriad.tripletriad.models.CardRarity
 import com.helloworldramen.tripletriad.tripletriad.models.CardType
 import com.helloworldramen.tripletriad.tripletriad.models.PlayerCard
-import godot.AspectRatioContainer
-import godot.ColorRect
-import godot.Label
-import godot.Spatial
+import com.helloworldramen.tripletriad.tripletriad.scenes.utility.Mouseable
+import godot.*
 import godot.annotation.RegisterClass
 import godot.annotation.RegisterFunction
+import godot.annotation.RegisterSignal
 import godot.core.Color
 import godot.extensions.getNodeAs
 import godot.global.GD
+import godot.signals.signal
 
 @RegisterClass
-class PlayerCardScene: Spatial() {
+class PlayerCardScene: Area2D() {
+
+	@RegisterSignal
+	val signalPlayerCardEntered by signal<PlayerCardScene>("cardScene")
+
+	@RegisterSignal
+	val signalPlayerCardExited by signal<PlayerCardScene>("cardScene")
 
 	private val container: AspectRatioContainer by lazy { getNodeAs("Container")!! }
 	private val colorRect: ColorRect by lazy { getNodeAs(colorRectPath())!! }
@@ -26,6 +32,7 @@ class PlayerCardScene: Spatial() {
 	private val eastLabel: Label by lazy { getNodeAs(colorRectPath("EastLabel"))!! }
 	private val southLabel: Label by lazy { getNodeAs(colorRectPath("SouthLabel"))!! }
 	private val westLabel: Label by lazy { getNodeAs(colorRectPath("WestLabel"))!! }
+	private val mouseable: Mouseable by lazy { getNodeAs("Container/Mouseable")!! }
 
 	private fun colorRectPath(path: String = ""): String {
 		return "Container/MarginContainer/ColorRect${if (path.isEmpty()) "" else "/$path"}"
@@ -33,10 +40,18 @@ class PlayerCardScene: Spatial() {
 
 	@RegisterFunction
 	override fun _ready() {
-//		GD.print("Hello world!")
+		mouseable.connect("mouse_in", this, "on_mouse_entered")
+		mouseable.connect("mouse_out", this, "on_mouse_exited")
+	}
 
-//		val playerCard = PlayerCard(card = Card.AlexanderPrime, playerId = 0, isPlayable = false)
-//		bind(playerCard)
+	@RegisterFunction
+	fun onMouseEntered(parent: Control) {
+		signalPlayerCardEntered.emit(this)
+	}
+
+	@RegisterFunction
+	fun onMouseExited(parent: Control) {
+		signalPlayerCardExited.emit(this)
 	}
 
 	fun bind(playerCard: PlayerCard?) {

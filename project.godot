@@ -10,9 +10,19 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Spatial",
+"class": "com_helloworldramen_tripletriad_tripletriad_scenes_board_BoardScene",
+"language": "Kotlin",
+"path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/board/BoardScene.kt"
+}, {
+"base": "Node2D",
 "class": "com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCardScene",
 "language": "Kotlin",
 "path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/card/PlayerCardScene.kt"
+}, {
+"base": "Spatial",
+"class": "com_helloworldramen_tripletriad_tripletriad_scenes_game_GameScene",
+"language": "Kotlin",
+"path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/game/GameScene.kt"
 }, {
 "base": "Spatial",
 "class": "com_helloworldramen_tripletriad_tripletriad_scenes_hand_HandScene",
@@ -20,7 +30,9 @@ _global_script_classes=[ {
 "path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/hand/HandScene.kt"
 } ]
 _global_script_class_icons={
+"com_helloworldramen_tripletriad_tripletriad_scenes_board_BoardScene": "",
 "com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCardScene": "",
+"com_helloworldramen_tripletriad_tripletriad_scenes_game_GameScene": "",
 "com_helloworldramen_tripletriad_tripletriad_scenes_hand_HandScene": ""
 }
 
@@ -29,6 +41,14 @@ _global_script_class_icons={
 config/name="godot-triple-triad"
 run/main_scene="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/game/GameScene.tscn"
 config/icon="res://icon.png"
+
+[input]
+
+mouse_primary={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
 
 [rendering]
 
