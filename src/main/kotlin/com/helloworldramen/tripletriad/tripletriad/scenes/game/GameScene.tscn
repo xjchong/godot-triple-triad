@@ -10,14 +10,15 @@
 script = ExtResource( 3 )
 
 [node name="HandScene1" parent="." instance=ExtResource( 1 )]
-position = Vector2( 21.0893, 163.212 )
+position = Vector2( 70.9089, 222.897 )
 script = ExtResource( 2 )
 
 [node name="HandScene2" parent="." instance=ExtResource( 1 )]
-position = Vector2( 706.114, 164.731 )
+position = Vector2( 743.114, 222.897 )
 script = ExtResource( 2 )
 
 [node name="BoardScene" parent="." instance=ExtResource( 4 )]
 position = Vector2( 346.597, 54.0985 )
 
 [node name="TestCardScene" parent="." instance=ExtResource( 5 )]
+position = Vector2( 45, 71.1283 )

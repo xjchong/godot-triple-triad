@@ -14,12 +14,12 @@ _global_script_classes=[ {
 "language": "Kotlin",
 "path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/board/BoardScene.kt"
 }, {
-"base": "Node2D",
+"base": "Area2D",
 "class": "com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCardScene",
 "language": "Kotlin",
 "path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/card/PlayerCardScene.kt"
 }, {
-"base": "Spatial",
+"base": "Node2D",
 "class": "com_helloworldramen_tripletriad_tripletriad_scenes_game_GameScene",
 "language": "Kotlin",
 "path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/game/GameScene.kt"
@@ -28,12 +28,18 @@ _global_script_classes=[ {
 "class": "com_helloworldramen_tripletriad_tripletriad_scenes_hand_HandScene",
 "language": "Kotlin",
 "path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/hand/HandScene.kt"
+}, {
+"base": "Control",
+"class": "com_helloworldramen_tripletriad_tripletriad_scenes_utility_Mouseable",
+"language": "Kotlin",
+"path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/utility/Mouseable.kt"
 } ]
 _global_script_class_icons={
 "com_helloworldramen_tripletriad_tripletriad_scenes_board_BoardScene": "",
 "com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCardScene": "",
 "com_helloworldramen_tripletriad_tripletriad_scenes_game_GameScene": "",
-"com_helloworldramen_tripletriad_tripletriad_scenes_hand_HandScene": ""
+"com_helloworldramen_tripletriad_tripletriad_scenes_hand_HandScene": "",
+"com_helloworldramen_tripletriad_tripletriad_scenes_utility_Mouseable": ""
 }
 
 [application]

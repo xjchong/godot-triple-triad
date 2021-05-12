@@ -38,12 +38,14 @@ class GameScene: Node2D() {
 		GD.print("mouse enter $cardScene ${System.currentTimeMillis()}")
 		if (hoveredCardScene == null) {
 			hoveredCardScene = cardScene
+			hoveredCardScene?.highlight()
 		}
 	}
 
 	@RegisterFunction
 	fun onPlayerCardExited(cardScene: PlayerCardScene) {
 		GD.print("mouse exit $cardScene ${System.currentTimeMillis()}")
+		hoveredCardScene?.unhighlight()
 		hoveredCardScene = null
 	}
 

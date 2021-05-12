@@ -121,28 +121,28 @@ __meta__ = {
 }
 
 [node name="PlayerCardScene1" parent="Container/Panel" instance=ExtResource( 1 )]
-position = Vector2( 12.5881, 12.1725 )
+position = Vector2( 59.8627, 83.8155 )
 
 [node name="PlayerCardScene2" parent="Container/Panel" instance=ExtResource( 1 )]
-position = Vector2( 116.588, 10.1725 )
+position = Vector2( 163.863, 81.8155 )
 
 [node name="PlayerCardScene3" parent="Container/Panel" instance=ExtResource( 1 )]
-position = Vector2( 220.588, 12.1725 )
+position = Vector2( 267.863, 83.8155 )
 
 [node name="PlayerCardScene4" parent="Container/Panel" instance=ExtResource( 1 )]
-position = Vector2( 12.5881, 164.172 )
+position = Vector2( 59.8627, 235.815 )
 
 [node name="PlayerCardScene5" parent="Container/Panel" instance=ExtResource( 1 )]
-position = Vector2( 116.588, 164.172 )
+position = Vector2( 163.863, 235.815 )
 
 [node name="PlayerCardScene6" parent="Container/Panel" instance=ExtResource( 1 )]
-position = Vector2( 220.588, 164.172 )
+position = Vector2( 267.863, 235.815 )
 
 [node name="PlayerCardScene7" parent="Container/Panel" instance=ExtResource( 1 )]
-position = Vector2( 12.5881, 316.172 )
+position = Vector2( 59.8627, 387.815 )
 
 [node name="PlayerCardScene8" parent="Container/Panel" instance=ExtResource( 1 )]
-position = Vector2( 116.588, 316.172 )
+position = Vector2( 163.863, 387.815 )
 
 [node name="PlayerCardScene9" parent="Container/Panel" instance=ExtResource( 1 )]
-position = Vector2( 220.588, 316.172 )
+position = Vector2( 267.863, 387.815 )

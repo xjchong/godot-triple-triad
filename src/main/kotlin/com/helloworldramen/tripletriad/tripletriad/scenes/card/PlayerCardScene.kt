@@ -10,6 +10,8 @@ import godot.annotation.RegisterClass
 import godot.annotation.RegisterFunction
 import godot.annotation.RegisterSignal
 import godot.core.Color
+import godot.core.NodePath
+import godot.core.Vector2
 import godot.extensions.getNodeAs
 import godot.global.GD
 import godot.signals.signal
@@ -33,6 +35,7 @@ class PlayerCardScene: Area2D() {
 	private val southLabel: Label by lazy { getNodeAs(colorRectPath("SouthLabel"))!! }
 	private val westLabel: Label by lazy { getNodeAs(colorRectPath("WestLabel"))!! }
 	private val mouseable: Mouseable by lazy { getNodeAs("Container/Mouseable")!! }
+	private val tween: Tween by lazy { getNodeAs("Tween")!! }
 
 	private fun colorRectPath(path: String = ""): String {
 		return "Container/MarginContainer/ColorRect${if (path.isEmpty()) "" else "/$path"}"
@@ -53,6 +56,19 @@ class PlayerCardScene: Area2D() {
 	fun onMouseExited(parent: Control) {
 		signalPlayerCardExited.emit(this)
 	}
+
+	@RegisterFunction
+	fun highlight() {
+		tween.interpolateProperty(this, NodePath("scale"), null, Vector2(1.1, 1.1), duration = 0.05)
+		tween.start()
+	}
+
+	@RegisterFunction
+	fun unhighlight() {
+		tween.interpolateProperty(this, NodePath("scale"), null, Vector2(1, 1), duration = 0.05)
+		tween.start()
+	}
+
 
 	fun bind(playerCard: PlayerCard?) {
 		if (playerCard?.card == Card.UNKNOWN) {
