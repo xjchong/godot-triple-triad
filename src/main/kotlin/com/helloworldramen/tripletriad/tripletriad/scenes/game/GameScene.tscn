@@ -15,41 +15,41 @@ corner_radius_bottom_left = 4
 script = ExtResource( 3 )
 
 [node name="BoardPanel" type="Panel" parent="."]
-margin_left = 344.477
-margin_top = 68.5234
-margin_right = 709.477
-margin_bottom = 574.523
+margin_left = 344.0
+margin_top = 64.0
+margin_right = 696.0
+margin_bottom = 568.0
 custom_styles/panel = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="BoardSlotTopLeft" parent="." instance=ExtResource( 1 )]
-position = Vector2( 408.092, 154.967 )
+position = Vector2( 408, 154.443 )
 
 [node name="BoardSlotTop" parent="." instance=ExtResource( 1 )]
-position = Vector2( 521.156, 155.49 )
+position = Vector2( 520, 154.443 )
 
 [node name="BoardSlotTopRight" parent="." instance=ExtResource( 1 )]
-position = Vector2( 636.838, 154.443 )
+position = Vector2( 632, 154.443 )
 
 [node name="BoardSlotLeft" parent="." instance=ExtResource( 1 )]
-position = Vector2( 409.662, 319.329 )
+position = Vector2( 408, 317.235 )
 
 [node name="BoardSlotCenter" parent="." instance=ExtResource( 1 )]
-position = Vector2( 521.68, 317.235 )
+position = Vector2( 520, 317.235 )
 
 [node name="BoardSlotRight" parent="." instance=ExtResource( 1 )]
-position = Vector2( 635.791, 319.853 )
+position = Vector2( 632, 317.235 )
 
 [node name="BoardSlotBottomLeft" parent="." instance=ExtResource( 1 )]
-position = Vector2( 410.186, 484.215 )
+position = Vector2( 408, 480 )
 
 [node name="BoardSlotBottom" parent="." instance=ExtResource( 1 )]
-position = Vector2( 524.297, 484.738 )
+position = Vector2( 520, 480 )
 
 [node name="BoardSlotBottomRight" parent="." instance=ExtResource( 1 )]
-position = Vector2( 636.315, 484.215 )
+position = Vector2( 632, 480 )
 
 [node name="TestCardScene" parent="." instance=ExtResource( 5 )]
 position = Vector2( 45, 71.1283 )
