@@ -4,15 +4,15 @@
 [ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/utility/Mouseable.kt" type="Script" id=2]
 [ext_resource path="res://src/main/resources/fonts/PlatNomorFont.tres" type="DynamicFont" id=3]
 
-[sub_resource type="StyleBoxFlat" id=2]
+[sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 1, 1, 1, 1 )
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 45.3438, 70.0264 )
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 45.3438, 69.5155 )
 
 [node name="PlayerCardScene" type="Area2D"]
 script = ExtResource( 1 )
@@ -21,7 +21,7 @@ script = ExtResource( 1 )
 margin_left = -45.0
 margin_top = -69.0
 margin_right = 45.0
-margin_bottom = 69.0
+margin_bottom = 71.0
 ratio = 0.65
 stretch_mode = 0
 __meta__ = {
@@ -29,15 +29,15 @@ __meta__ = {
 }
 
 [node name="OuterPanel" type="Panel" parent="Container"]
-margin_top = -0.230774
+margin_top = 0.769226
 margin_right = 90.0
-margin_bottom = 138.231
-custom_styles/panel = SubResource( 2 )
+margin_bottom = 139.231
+custom_styles/panel = SubResource( 1 )
 
 [node name="MarginContainer" type="MarginContainer" parent="Container"]
-margin_top = -0.230774
+margin_top = 0.769226
 margin_right = 90.0
-margin_bottom = 138.231
+margin_bottom = 139.231
 custom_constants/margin_right = 8
 custom_constants/margin_top = 8
 custom_constants/margin_left = 8
@@ -148,15 +148,16 @@ __meta__ = {
 }
 
 [node name="Mouseable" type="Control" parent="Container"]
-margin_top = -0.230774
+margin_top = 0.769226
 margin_right = 90.0
-margin_bottom = 138.231
+margin_bottom = 139.231
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 1 )
+position = Vector2( 0, 1 )
+shape = SubResource( 2 )
 
 [node name="Tween" type="Tween" parent="."]

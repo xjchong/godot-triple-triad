@@ -1,24 +1,55 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/hand/HandScene.tscn" type="PackedScene" id=1]
-[ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/hand/HandScene.kt" type="Script" id=2]
+[ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/slot/SlotScene.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/game/GameScene.kt" type="Script" id=3]
-[ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/board/BoardScene.tscn" type="PackedScene" id=4]
 [ext_resource path="res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/card/PlayerCardScene.tscn" type="PackedScene" id=5]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.231373, 0.231373, 0.231373, 1 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="GameScene" type="Node2D"]
 script = ExtResource( 3 )
 
-[node name="HandScene1" parent="." instance=ExtResource( 1 )]
-position = Vector2( 70.9089, 222.897 )
-script = ExtResource( 2 )
+[node name="BoardPanel" type="Panel" parent="."]
+margin_left = 344.477
+margin_top = 68.5234
+margin_right = 709.477
+margin_bottom = 574.523
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="HandScene2" parent="." instance=ExtResource( 1 )]
-position = Vector2( 743.114, 222.897 )
-script = ExtResource( 2 )
+[node name="BoardSlotTopLeft" parent="." instance=ExtResource( 1 )]
+position = Vector2( 408.092, 154.967 )
 
-[node name="BoardScene" parent="." instance=ExtResource( 4 )]
-position = Vector2( 346.597, 54.0985 )
+[node name="BoardSlotTop" parent="." instance=ExtResource( 1 )]
+position = Vector2( 521.156, 155.49 )
+
+[node name="BoardSlotTopRight" parent="." instance=ExtResource( 1 )]
+position = Vector2( 636.838, 154.443 )
+
+[node name="BoardSlotLeft" parent="." instance=ExtResource( 1 )]
+position = Vector2( 409.662, 319.329 )
+
+[node name="BoardSlotCenter" parent="." instance=ExtResource( 1 )]
+position = Vector2( 521.68, 317.235 )
+
+[node name="BoardSlotRight" parent="." instance=ExtResource( 1 )]
+position = Vector2( 635.791, 319.853 )
+
+[node name="BoardSlotBottomLeft" parent="." instance=ExtResource( 1 )]
+position = Vector2( 410.186, 484.215 )
+
+[node name="BoardSlotBottom" parent="." instance=ExtResource( 1 )]
+position = Vector2( 524.297, 484.738 )
+
+[node name="BoardSlotBottomRight" parent="." instance=ExtResource( 1 )]
+position = Vector2( 636.315, 484.215 )
 
 [node name="TestCardScene" parent="." instance=ExtResource( 5 )]
 position = Vector2( 45, 71.1283 )
