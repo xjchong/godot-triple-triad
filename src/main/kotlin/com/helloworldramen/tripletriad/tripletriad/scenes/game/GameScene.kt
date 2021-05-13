@@ -113,13 +113,16 @@ class GameScene: Node2D() {
 	override fun _input(event: InputEvent) {
 		handleDragDrop(event)
 		handleTestFlipping(event)
+		handleTestGameExecution(event)
 	}
 
 	fun bind(gameState: GameState) {
-		gameState.players.forEachIndexed { index, player ->
-			when (player.id) {
-				0 -> player1CardScenes[index].bind(player.cards[index])
-				1 -> player2CardScenes[index].bind(player.cards[index])
+		gameState.players.forEach { player ->
+			player.cards.forEachIndexed { cardIndex, card ->
+				when (player.id) {
+					0 -> player1CardScenes[cardIndex].bind(card)
+					1 -> player2CardScenes[cardIndex].bind(card)
+				}
 			}
 		}
 	}
@@ -163,8 +166,14 @@ class GameScene: Node2D() {
 			isMousePrimaryPressed = false
 
 			lastEnteredSlot?.let {
-				grabbedCardScene?.position = it.position
+				if (lastEnteredSlot in boardSlotScenes) {
+					grabbedCardScene?.position = it.position
+				} else {
+					grabbedCardScene?.position = grabbedCardSceneOriginalPosition
+				}
+
 				lastEnteredSlot?.unhighlight()
+				lastEnteredSlot = null
 			} ?: run {
 				grabbedCardScene?.position = grabbedCardSceneOriginalPosition
 			}
