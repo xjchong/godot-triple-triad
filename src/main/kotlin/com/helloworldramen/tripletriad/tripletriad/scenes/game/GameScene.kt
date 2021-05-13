@@ -179,12 +179,14 @@ class GameScene: Node2D() {
 			}
 
 			grabbedCardScene?.unhighlight()
+			grabbedCardScene?.zIndex = grabbedCardScene!!.zIndex - 100
 			grabbedCardScene = null
 
 		} else if (!isMousePrimaryPressed && event.isActionPressed("mouse_primary")) {
 			// Mouse pressed
 			isMousePrimaryPressed = true
 			grabbedCardScene = hoveredCardScene
+			grabbedCardScene?.zIndex = grabbedCardScene!!.zIndex + 100
 			grabbedCardScene?.highlight()
 			lastEnteredSlot?.highlight()
 			grabbedCardSceneOriginalPosition = grabbedCardScene?.position ?: Vector2()
