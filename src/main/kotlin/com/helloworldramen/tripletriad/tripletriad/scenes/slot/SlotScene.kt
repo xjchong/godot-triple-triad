@@ -2,7 +2,6 @@ package com.helloworldramen.tripletriad.tripletriad.scenes.slot
 
 import com.helloworldramen.tripletriad.tripletriad.scenes.card.PlayerCardScene
 import godot.Area2D
-import godot.CollisionShape2D
 import godot.ColorRect
 import godot.annotation.RegisterClass
 import godot.annotation.RegisterFunction
@@ -16,10 +15,10 @@ import godot.signals.signal
 class SlotScene: Area2D() {
 
 	@RegisterSignal
-	val signalCardEntered by signal<SlotScene>("slotScene")
+	val signalSlotEntered by signal<SlotScene>("slotScene")
 
 	@RegisterSignal
-	val signalCardExited by signal<SlotScene>("slotScene")
+	val signalSlotExited by signal<SlotScene>("slotScene")
 
 	private val colorRect: ColorRect by lazy { getNodeAs("ColorRect")!! }
 
@@ -42,20 +41,14 @@ class SlotScene: Area2D() {
 	@RegisterFunction
 	fun onAreaEntered(otherArea2D: Area2D) {
 		if (otherArea2D is PlayerCardScene) {
-			GD.print("slot on area entered")
-			signalCardEntered.emit(this)
-		} else {
-			GD.print("slot on area entered (dud)")
+			signalSlotEntered.emit(this)
 		}
 	}
 
 	@RegisterFunction
 	fun onAreaExited(otherArea2D: Area2D) {
 		if (otherArea2D is PlayerCardScene) {
-			GD.print("slot on area exited")
-			signalCardExited.emit(this)
-		} else {
-			GD.print("slot on area exited (dud)")
+			signalSlotExited.emit(this)
 		}
 	}
 }

@@ -29,7 +29,47 @@ class GameScene: Node2D() {
 				getNodeAs("BoardSlotRight")!!,
 				getNodeAs("BoardSlotBottomLeft")!!,
 				getNodeAs("BoardSlotBottom")!!,
-				getNodeAs("BoardSlotBottomRight")!!,
+				getNodeAs("BoardSlotBottomRight")!!
+		)
+	}
+
+	private val player1SlotScenes: List<SlotScene> by lazy {
+		listOf(
+				getNodeAs("Player1Slot1")!!,
+				getNodeAs("Player1Slot2")!!,
+				getNodeAs("Player1Slot3")!!,
+				getNodeAs("Player1Slot4")!!,
+				getNodeAs("Player1Slot5")!!
+		)
+	}
+
+	private val player2SlotScenes: List<SlotScene> by lazy {
+		listOf(
+				getNodeAs("Player2Slot1")!!,
+				getNodeAs("Player2Slot2")!!,
+				getNodeAs("Player2Slot3")!!,
+				getNodeAs("Player2Slot4")!!,
+				getNodeAs("Player2Slot5")!!
+		)
+	}
+
+	private val player1CardScenes: List<PlayerCardScene> by lazy {
+		listOf(
+				getNodeAs("Player1Card1")!!,
+				getNodeAs("Player1Card2")!!,
+				getNodeAs("Player1Card3")!!,
+				getNodeAs("Player1Card4")!!,
+				getNodeAs("Player1Card5")!!,
+		)
+	}
+
+	private val player2CardScenes: List<PlayerCardScene> by lazy {
+		listOf(
+				getNodeAs("Player2Card1")!!,
+				getNodeAs("Player2Card2")!!,
+				getNodeAs("Player2Card3")!!,
+				getNodeAs("Player2Card4")!!,
+				getNodeAs("Player2Card5")!!,
 		)
 	}
 
@@ -54,9 +94,14 @@ class GameScene: Node2D() {
 
 	@RegisterFunction
 	override fun _ready() {
-		boardSlotScenes.forEach { boardSlotScene ->
-			boardSlotScene.connect("card_entered", this, "on_slot_entered")
-			boardSlotScene.connect("card_exited", this, "on_slot_exited")
+		(boardSlotScenes + player1SlotScenes + player2SlotScenes).forEach {
+			it.connect("slot_entered", this, "on_slot_entered")
+			it.connect("slot_exited", this, "on_slot_exited")
+		}
+
+		(player1CardScenes + player2CardScenes).forEach {
+			it.connect("player_card_entered", this, "on_player_card_entered")
+			it.connect("player_card_exited", this, "on_player_card_exited")
 		}
 
 		testCardScene.connect("player_card_entered", this, "on_player_card_entered")
@@ -71,6 +116,12 @@ class GameScene: Node2D() {
 	}
 
 	fun bind(gameState: GameState) {
+		gameState.players.forEachIndexed { index, player ->
+			when (player.id) {
+				0 -> player1CardScenes[index].bind(player.cards[index])
+				1 -> player2CardScenes[index].bind(player.cards[index])
+			}
+		}
 	}
 
 	//endregion
@@ -106,7 +157,6 @@ class GameScene: Node2D() {
 
 	//endregion
 
-
 	private fun handleDragDrop(event: InputEvent) {
 		if (isMousePrimaryPressed && event.isActionReleased("mouse_primary")) {
 			// Mouse released
@@ -140,9 +190,9 @@ class GameScene: Node2D() {
 		if (!didRun && event.isActionPressed("ui_accept")) {
 			didRun = true
 
-			setupAiGame()
+			testSetup()
 		} else if (didRun && event.isActionPressed("ui_accept")) {
-			nextTurn()
+//			nextTurn()
 		}
 	}
 
@@ -182,6 +232,19 @@ class GameScene: Node2D() {
 
 		val move = getAiMove(ai, nextState)
 		gameEngine.playMove(move)
+
+		bind(gameEngine.nextState())
+	}
+
+	private fun testSetup() {
+		val gameEngine = GameEngine()
+
+		gameEngine.startGame(listOf(
+				Player(1, arrayOf(Card.Ananta, Card.AlexanderPrime, Card.Dodo, Card.Mandragora, Card.Amaljaa)),
+				Player(0, arrayOf(Card.Adamantoise, Card.Ananta, Card.Bomb, Card.Coeurl, Card.Sabotender))),
+				advancedRules = listOf(AllOpen, Descension, SuddenDeath),
+				shouldShufflePlayers = false
+		)
 
 		bind(gameEngine.nextState())
 	}

@@ -15,41 +15,101 @@ corner_radius_bottom_left = 4
 script = ExtResource( 3 )
 
 [node name="BoardPanel" type="Panel" parent="."]
-margin_left = 344.0
-margin_top = 64.0
-margin_right = 696.0
-margin_bottom = 568.0
+margin_left = 188.0
+margin_top = 395.0
+margin_right = 540.0
+margin_bottom = 899.0
 custom_styles/panel = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="BoardSlotTopLeft" parent="." instance=ExtResource( 1 )]
-position = Vector2( 408, 154.443 )
+position = Vector2( 252, 485.443 )
 
 [node name="BoardSlotTop" parent="." instance=ExtResource( 1 )]
-position = Vector2( 520, 154.443 )
+position = Vector2( 364, 485.443 )
 
 [node name="BoardSlotTopRight" parent="." instance=ExtResource( 1 )]
-position = Vector2( 632, 154.443 )
+position = Vector2( 476, 485.443 )
 
 [node name="BoardSlotLeft" parent="." instance=ExtResource( 1 )]
-position = Vector2( 408, 317.235 )
+position = Vector2( 252, 648.235 )
 
 [node name="BoardSlotCenter" parent="." instance=ExtResource( 1 )]
-position = Vector2( 520, 317.235 )
+position = Vector2( 364, 648.235 )
 
 [node name="BoardSlotRight" parent="." instance=ExtResource( 1 )]
-position = Vector2( 632, 317.235 )
+position = Vector2( 476, 648.235 )
 
 [node name="BoardSlotBottomLeft" parent="." instance=ExtResource( 1 )]
-position = Vector2( 408, 480 )
+position = Vector2( 252, 811 )
 
 [node name="BoardSlotBottom" parent="." instance=ExtResource( 1 )]
-position = Vector2( 520, 480 )
+position = Vector2( 364, 811 )
 
 [node name="BoardSlotBottomRight" parent="." instance=ExtResource( 1 )]
-position = Vector2( 632, 480 )
+position = Vector2( 476, 811 )
 
 [node name="TestCardScene" parent="." instance=ExtResource( 5 )]
 position = Vector2( 45, 71.1283 )
+
+[node name="Player1Slot1" parent="." instance=ExtResource( 1 )]
+position = Vector2( 255.987, 1004 )
+
+[node name="Player1Slot2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 363.987, 1004 )
+
+[node name="Player1Slot3" parent="." instance=ExtResource( 1 )]
+position = Vector2( 471.987, 1004 )
+
+[node name="Player1Slot4" parent="." instance=ExtResource( 1 )]
+position = Vector2( 310.973, 1164 )
+
+[node name="Player1Slot5" parent="." instance=ExtResource( 1 )]
+position = Vector2( 418.973, 1164.24 )
+
+[node name="Player1Card1" parent="." instance=ExtResource( 5 )]
+position = Vector2( 255.987, 1003 )
+
+[node name="Player1Card2" parent="." instance=ExtResource( 5 )]
+position = Vector2( 363.987, 1003 )
+
+[node name="Player1Card3" parent="." instance=ExtResource( 5 )]
+position = Vector2( 471.987, 1003 )
+
+[node name="Player1Card4" parent="." instance=ExtResource( 5 )]
+position = Vector2( 310.973, 1163.24 )
+
+[node name="Player1Card5" parent="." instance=ExtResource( 5 )]
+position = Vector2( 418.973, 1163.24 )
+
+[node name="Player2Slot1" parent="." instance=ExtResource( 1 )]
+position = Vector2( 252, 128 )
+
+[node name="Player2Slot2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 360, 128 )
+
+[node name="Player2Slot3" parent="." instance=ExtResource( 1 )]
+position = Vector2( 468, 128 )
+
+[node name="Player2Slot4" parent="." instance=ExtResource( 1 )]
+position = Vector2( 306.987, 288 )
+
+[node name="Player2Slot5" parent="." instance=ExtResource( 1 )]
+position = Vector2( 414.987, 288.235 )
+
+[node name="Player2Card1" parent="." instance=ExtResource( 5 )]
+position = Vector2( 252, 127 )
+
+[node name="Player2Card2" parent="." instance=ExtResource( 5 )]
+position = Vector2( 360, 127 )
+
+[node name="Player2Card3" parent="." instance=ExtResource( 5 )]
+position = Vector2( 468, 127 )
+
+[node name="Player2Card4" parent="." instance=ExtResource( 5 )]
+position = Vector2( 306.987, 287.235 )
+
+[node name="Player2Card5" parent="." instance=ExtResource( 5 )]
+position = Vector2( 414.987, 287.235 )
