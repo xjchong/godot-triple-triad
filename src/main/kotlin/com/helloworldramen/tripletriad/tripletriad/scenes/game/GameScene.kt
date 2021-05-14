@@ -6,6 +6,7 @@ import com.helloworldramen.tripletriad.tripletriad.ai.MCTS
 import com.helloworldramen.tripletriad.tripletriad.game.GameStateStep
 import com.helloworldramen.tripletriad.tripletriad.models.*
 import com.helloworldramen.tripletriad.tripletriad.scenes.card.PlayerCardScene
+import com.helloworldramen.tripletriad.tripletriad.scenes.game_toast.GameToastScene
 import com.helloworldramen.tripletriad.tripletriad.scenes.slot.SlotScene
 import godot.*
 import godot.annotation.RegisterClass
@@ -75,6 +76,8 @@ class GameScene: Node2D() {
 				getNodeAs("Player2Card5")!!,
 		)
 	}
+
+	private val gameToastScene: GameToastScene by lazy { getNodeAs("GameToast")!! }
 
 	//endregion
 
@@ -172,6 +175,11 @@ class GameScene: Node2D() {
 	private fun bindWithSteps(state: GameState, steps: List<GameStateStep>, onCompletion: (() -> Unit)? = null) {
 		if (steps.isEmpty()) {
 			bind(state)
+			when(state.nextPlayer().id) {
+				0 -> gameToastScene.toastBlueTurn()
+				1 -> gameToastScene.toastRedTurn()
+
+			}
 			onCompletion?.invoke()
 			return
 		}

@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "Kotlin",
 "path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/game/GameScene.kt"
 }, {
+"base": "ColorRect",
+"class": "com_helloworldramen_tripletriad_tripletriad_scenes_game_toast_GameToastScene",
+"language": "Kotlin",
+"path": "res://src/main/kotlin/com/helloworldramen/tripletriad/tripletriad/scenes/game_toast/GameToastScene.kt"
+}, {
 "base": "Spatial",
 "class": "com_helloworldramen_tripletriad_tripletriad_scenes_hand_HandScene",
 "language": "Kotlin",
@@ -43,6 +48,7 @@ _global_script_class_icons={
 "com_helloworldramen_tripletriad_tripletriad_scenes_board_BoardScene": "",
 "com_helloworldramen_tripletriad_tripletriad_scenes_card_PlayerCardScene": "",
 "com_helloworldramen_tripletriad_tripletriad_scenes_game_GameScene": "",
+"com_helloworldramen_tripletriad_tripletriad_scenes_game_toast_GameToastScene": "",
 "com_helloworldramen_tripletriad_tripletriad_scenes_hand_HandScene": "",
 "com_helloworldramen_tripletriad_tripletriad_scenes_slot_SlotScene": "",
 "com_helloworldramen_tripletriad_tripletriad_scenes_utility_Mouseable": ""
