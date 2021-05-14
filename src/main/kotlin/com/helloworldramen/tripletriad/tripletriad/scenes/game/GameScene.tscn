@@ -52,6 +52,7 @@ position = Vector2( 364, 811 )
 position = Vector2( 476, 811 )
 
 [node name="TestCardScene" parent="." instance=ExtResource( 5 )]
+visible = false
 position = Vector2( 45, 71.1283 )
 
 [node name="Player1Slot1" parent="." instance=ExtResource( 1 )]

@@ -39,7 +39,7 @@ class GameStateMachine {
         requireCardPlayable(currentState, player, playerCard, position)
 
         // Prepare a new steps list.
-        stepsList = stepsList + listOf(listOf())
+        stepsList = stepsList + listOf(listOf(GameStateStep.Move(position)))
 
         // Place the card on the board.
         val nextBoard = placeCard(playerCard, position, currentState.board, currentState.advancedRules)

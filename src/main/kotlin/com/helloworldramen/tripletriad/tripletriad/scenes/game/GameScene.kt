@@ -184,10 +184,11 @@ class GameScene: Node2D() {
 		val remainingSteps = steps.drop(1)
 
 		when(nextStep) {
-			is GameStateStep.Placed -> bindStepPlaced(state, nextStep)
+			is GameStateStep.Move -> bindStepMove(state, nextStep)
 			is GameStateStep.Same -> bindStepSame(state, nextStep)
 			is GameStateStep.Plus -> bindStepPlus(state, nextStep)
 			is GameStateStep.Combo -> bindStepCombo(state, nextStep)
+			is GameStateStep.Placed -> bindStepPlaced(state, nextStep)
 			is GameStateStep.Ascension -> bind(state)
 			is GameStateStep.Descension -> bind(state)
 			is GameStateStep.SuddenDeath -> bind(state)
@@ -199,27 +200,20 @@ class GameScene: Node2D() {
 
 	}
 
-	private fun bindStepPlaced(state: GameState, step: GameStateStep.Placed) {
+	private fun bindStepMove(state: GameState, step: GameStateStep.Move) {
 		val placedPosition = step.placedPosition
 		val placedCard = state.board.playerCards[placedPosition] ?: return
 		val placedCardScene = findPlayerCardScene(placedCard) ?: return
 
-		getSlotPositionFromBoardPosition(step.placedPosition)?.let { slotPosition ->
-			placedCardScene.moveTo(slotPosition, duringMove =  {
+		getSlotPositionFromBoardPosition(placedPosition)?.let { slotPosition ->
+			placedCardScene.moveTo(slotPosition, duringMove = {
 				placedCardScene.bind(placedCard)
-			}) {
-				for (flippedPosition in step.flippedPositions) {
-					val flippedCard = state.board.playerCards[flippedPosition] ?: continue
-					val flippedCardScene = findPlayerCardScene(flippedCard) ?: continue
-					if (flippedCardScene.playerCard?.playerId == flippedCard.playerId) continue // No flip required.
-					val isHorizontalFlip = placedPosition.row == flippedPosition.row
-
-					flippedCardScene.flip(isHorizontalFlip) {
-						flippedCardScene.flip(isHorizontalFlip, flippedCard)
-					}
-				}
-			}
+			})
 		}
+	}
+
+	private fun bindStepPlaced(state: GameState, step: GameStateStep.Placed) {
+		flipMultipleAndBind(state, step.placedPosition, step.flippedPositions)
 	}
 
 	private fun bindStepSame(state: GameState, step: GameStateStep.Same) {
@@ -378,8 +372,8 @@ class GameScene: Node2D() {
 		gameEngine.startGame(listOf(
 				Player(1, arrayOf(Card.Ananta, Card.AlexanderPrime, Card.Dodo, Card.Mandragora, Card.Amaljaa)),
 				Player(0, arrayOf(Card.Adamantoise, Card.Ananta, Card.Bomb, Card.Coeurl, Card.Sabotender))),
-				advancedRules = listOf(AllOpen, Descension, SuddenDeath),
-				shouldShufflePlayers = false
+				advancedRules = listOf(AllOpen, Plus, Chaos),
+				shouldShufflePlayers = true
 		)
 
 		bind(gameEngine.nextState().first)
@@ -396,26 +390,13 @@ class GameScene: Node2D() {
 		}
 	}
 
-	private fun testSetup() {
-		val gameEngine = GameEngine()
-
-		gameEngine.startGame(listOf(
-				Player(1, arrayOf(Card.Ananta, Card.AlexanderPrime, Card.Dodo, Card.Mandragora, Card.Amaljaa)),
-				Player(0, arrayOf(Card.Adamantoise, Card.Ananta, Card.Bomb, Card.Coeurl, Card.Sabotender))),
-				advancedRules = listOf(AllOpen, Descension, SuddenDeath),
-				shouldShufflePlayers = false
-		)
-
-		bind(gameEngine.nextState().first)
-	}
-
 	private fun testAi() {
 		val gameEngine = GameEngine()
 
 		gameEngine.startGame(listOf(
 				Player(1, arrayOf(Card.Ananta, Card.AlexanderPrime, Card.Dodo, Card.Mandragora, Card.Amaljaa)),
 				Player(0, arrayOf(Card.Adamantoise, Card.Ananta, Card.Bomb, Card.Coeurl, Card.Sabotender))),
-				advancedRules = listOf(AllOpen, Descension, SuddenDeath),
+				advancedRules = listOf(AllOpen, Plus),
 				shouldShufflePlayers = false
 		)
 
