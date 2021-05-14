@@ -1,3 +1,4 @@
+import com.helloworldramen.tripletriad.tripletriad.game.GameStateStep
 import com.helloworldramen.tripletriad.tripletriad.models.*
 import kotlin.random.Random
 
@@ -34,11 +35,17 @@ class GameEngine {
         return initialGameState
     }
 
-    fun nextState(): GameState {
-        return redactState(stateMachine.states.last())
+    /**
+     * @return the next game state, and the steps taken to reach it from the previous state.
+     */
+    fun nextState(): Pair<GameState, List<GameStateStep>> {
+        return Pair(redactState(stateMachine.states.last()), stateMachine.stepsList.last())
     }
 
-    fun playMove(move: Move): GameState {
+    /**
+     * @return the next game state, and the steps taken to reach it from the previous state.
+     */
+    fun playMove(move: Move): Pair<GameState, List<GameStateStep>> {
         if (stateMachine.states.last().isGameOver()) {
             println("Game is over!")
         } else {

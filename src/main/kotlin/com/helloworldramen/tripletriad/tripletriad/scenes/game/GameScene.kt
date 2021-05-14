@@ -12,6 +12,7 @@ import godot.annotation.RegisterFunction
 import godot.core.Vector2
 import godot.extensions.getNodeAs
 import godot.global.GD
+import models.Position
 
 @RegisterClass
 class GameScene: Node2D() {
@@ -117,13 +118,57 @@ class GameScene: Node2D() {
 	}
 
 	fun bind(gameState: GameState) {
+		// Bind the player hands.
 		gameState.players.forEach { player ->
-			player.cards.forEachIndexed { cardIndex, card ->
-				when (player.id) {
-					0 -> player1CardScenes[cardIndex].bind(card)
-					1 -> player2CardScenes[cardIndex].bind(card)
+			for ((cardIndex, playerCard) in player.cards.withIndex()) {
+				val playerSlotScene = when (player.id) {
+					0 -> player1SlotScenes[cardIndex]
+					1 -> player2SlotScenes[cardIndex]
+					else -> null
+				} ?: continue
+
+				findPlayerCardScene(playerCard) ?: when (player.id) {
+					0 -> player1CardScenes[cardIndex]
+					1 -> player2CardScenes[cardIndex]
+					else -> null
+				}?.run {
+					position = playerSlotScene.position
+					bind(playerCard)
 				}
 			}
+		}
+
+		// Bind the board.
+		for ((boardPosition, playerCard) in gameState.board.playerCards) {
+			if (playerCard == null) continue
+
+			val boardSlotScene = when(boardPosition) {
+				Position.TOP_LEFT -> boardSlotScenes[0]
+				Position.TOP -> boardSlotScenes[1]
+				Position.TOP_RIGHT -> boardSlotScenes[2]
+				Position.LEFT -> boardSlotScenes[3]
+				Position.CENTER -> boardSlotScenes[4]
+				Position.RIGHT -> boardSlotScenes[5]
+				Position.BOTTOM_LEFT -> boardSlotScenes[6]
+				Position.BOTTOM -> boardSlotScenes[7]
+				Position.BOTTOM_RIGHT -> boardSlotScenes[8]
+				else -> null
+			} ?: continue
+
+			findPlayerCardScene(playerCard)?.run {
+				position = boardSlotScene.position
+				bind(playerCard)
+			}
+		}
+	}
+
+	private fun findPlayerCardScene(playerCard: PlayerCard): PlayerCardScene? {
+		val player1Card = player1CardScenes.find {
+			it.playerCard?.id == playerCard.id
+		}
+
+		return player1Card ?: player2CardScenes.find {
+			it.playerCard?.id == playerCard.id
 		}
 	}
 
@@ -201,9 +246,9 @@ class GameScene: Node2D() {
 		if (!didRun && event.isActionPressed("ui_accept")) {
 			didRun = true
 
-			testSetup()
+			setupAiGame()
 		} else if (didRun && event.isActionPressed("ui_accept")) {
-//			nextTurn()
+			nextTurn()
 		}
 	}
 
@@ -233,18 +278,19 @@ class GameScene: Node2D() {
 				shouldShufflePlayers = false
 		)
 
-		bind(gameEngine.nextState())
+		bind(gameEngine.nextState().first)
 	}
 
 	private fun nextTurn() {
-		val nextState = gameEngine.nextState()
+		val (nextState, steps) = gameEngine.nextState()
+
+		bind(nextState)
 
 		if (nextState.isGameOver()) return
 
 		val move = getAiMove(ai, nextState)
 		gameEngine.playMove(move)
 
-		bind(gameEngine.nextState())
 	}
 
 	private fun testSetup() {
@@ -257,7 +303,7 @@ class GameScene: Node2D() {
 				shouldShufflePlayers = false
 		)
 
-		bind(gameEngine.nextState())
+		bind(gameEngine.nextState().first)
 	}
 
 	private fun testAi() {
@@ -271,7 +317,7 @@ class GameScene: Node2D() {
 		)
 
 		val ai = MCTS()
-		var nextState = gameEngine.nextState()
+		var (nextState, steps) = gameEngine.nextState()
 
 		while (!nextState.isGameOver()) {
 			val move = if (nextState.nextPlayer().id == 0) {
@@ -283,7 +329,10 @@ class GameScene: Node2D() {
 			}
 
 			gameEngine.playMove(move)
-			nextState = gameEngine.nextState()
+			with(gameEngine.nextState()) {
+				nextState = first
+				steps = second
+			}
 
 			if (nextState.nextPlayer().id == 1) {
 				bind(nextState)

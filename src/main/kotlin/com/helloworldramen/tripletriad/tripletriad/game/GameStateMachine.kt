@@ -13,6 +13,7 @@ class GameStateMachine {
 
     fun setState(gameState: GameState) {
         states = listOf(gameState)
+        stepsList = listOf(listOf())
     }
 
     @Throws(IllegalStateException::class)

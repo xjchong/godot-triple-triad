@@ -24,6 +24,7 @@ class PlayerCardScene: Area2D() {
 	@RegisterSignal
 	val signalPlayerCardExited by signal<PlayerCardScene>("cardScene")
 
+	var playerCard: PlayerCard? = null
 	private val container: AspectRatioContainer by lazy { getNodeAs("Container")!! }
 	private val colorRect: ColorRect by lazy { getNodeAs(colorRectPath())!! }
 	private val rarityLabel: Label by lazy { getNodeAs(colorRectPath("RarityLabel"))!! }
@@ -97,6 +98,7 @@ class PlayerCardScene: Area2D() {
 
 
 	fun bind(playerCard: PlayerCard?) {
+		this.playerCard = playerCard
 		if (playerCard?.card == Card.UNKNOWN) {
 			bindUnknown()
 		} else {
