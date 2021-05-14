@@ -118,7 +118,6 @@ class GameScene: Node2D() {
 	private fun bind(gameState: GameState) {
 		val isNewGame = gameState.board.playerCards.values.filterNotNull().isEmpty()
 		// Bind the player hands.
-		GD.print(gameState.players.flatMap { it.cards })
 		gameState.players.forEach { player ->
 			for ((cardIndex, playerCard) in player.cards.withIndex()) {
 				if (isNewGame) {
@@ -170,9 +169,10 @@ class GameScene: Node2D() {
 		}
 	}
 
-	private fun bindWithSteps(state: GameState, steps: List<GameStateStep>) {
+	private fun bindWithSteps(state: GameState, steps: List<GameStateStep>, onCompletion: (() -> Unit)? = null) {
 		if (steps.isEmpty()) {
 			bind(state)
+			onCompletion?.invoke()
 			return
 		}
 
@@ -191,7 +191,7 @@ class GameScene: Node2D() {
 		}
 
 		Timer().schedule(timerTask {
-			bindWithSteps(state, remainingSteps)
+			bindWithSteps(state, remainingSteps, onCompletion)
 		}, 1000)
 
 	}
@@ -285,7 +285,6 @@ class GameScene: Node2D() {
 
 	@RegisterFunction
 	fun onPlayerCardEntered(cardScene: PlayerCardScene) {
-		GD.print("mouse enter $cardScene ${System.currentTimeMillis()}")
 		if (hoveredCardScene == null) {
 			hoveredCardScene = cardScene
 		}
@@ -293,7 +292,6 @@ class GameScene: Node2D() {
 
 	@RegisterFunction
 	fun onPlayerCardExited(cardScene: PlayerCardScene) {
-		GD.print("mouse exit $cardScene ${System.currentTimeMillis()}")
 		hoveredCardScene = null
 	}
 
@@ -304,11 +302,17 @@ class GameScene: Node2D() {
 			// Mouse released
 			isMousePrimaryPressed = false
 
-			lastEnteredSlot?.let {
-				if (lastEnteredSlot in boardSlotScenes) {
-					grabbedCardScene?.position = it.position
-				} else {
-					grabbedCardScene?.position = grabbedCardSceneOriginalPosition
+			lastEnteredSlot?.let { slotScene ->
+				grabbedCardScene?.let { grabbedCard ->
+					if (slotScene in boardSlotScenes && isBoardSlotFree(slotScene, grabbedCard)) {
+						grabbedCard.position = slotScene.position
+
+						if (!registerPlayerMove(grabbedCard, slotScene)) {
+							grabbedCard.position = grabbedCardSceneOriginalPosition
+						}
+					} else {
+						grabbedCard.position = grabbedCardSceneOriginalPosition
+					}
 				}
 
 				lastEnteredSlot?.unhighlight()
@@ -349,7 +353,7 @@ class GameScene: Node2D() {
 		if (cardScene.playerCard?.isPlayable != true) return false
 
 		// Is this card currently in the player's hand?
-		val board = gameEngine.nextState(perspectivePlayerId).first.board
+		val board = gameEngine.currentState(perspectivePlayerId).first.board
 		val boardCardIds = board.playerCards.values.filterNotNull().map { it.id }
 		if (boardCardIds.contains(cardScene.playerCard?.id)) return false
 
@@ -361,13 +365,30 @@ class GameScene: Node2D() {
 		if (!didRun && event.isActionPressed("ui_accept")) {
 			didRun = true
 
-			setupAiGame()
+			startGame()
 		} else if (event.isActionPressed("ui_accept")) {
-			playAiMove(gameEngine.nextState().first.nextPlayer().id)
+			if (gameEngine.currentState().first.isGameOver()) {
+				didRun = false
+			} else {
+				getAiMove(ai)?.let { playMove(it) }
+			}
 		}
 	}
 
-	private fun setupAiGame() {
+	private fun playMove(move: Move, onCompletion: (() -> Unit)? = null) {
+		val nextState = gameEngine.currentState().first
+
+		if (nextState.isGameOver()) return
+
+		gameEngine.playMove(move)
+		with(gameEngine.currentState(perspectivePlayerId)) {
+			bindWithSteps(first, second) {
+				onCompletion?.invoke()
+			}
+		}
+	}
+
+	private fun startGame() {
 		gameEngine.startGame(listOf(
 				Player(1, arrayOf(Card.Ananta, Card.AlexanderPrime, Card.Dodo, Card.Mandragora, Card.Amaljaa)),
 				Player(0, arrayOf(Card.Adamantoise, Card.Ananta, Card.Bomb, Card.Coeurl, Card.Sabotender))),
@@ -375,22 +396,44 @@ class GameScene: Node2D() {
 				shouldShufflePlayers = true
 		)
 
-		bind(gameEngine.nextState(perspectivePlayerId).first)
+		bind(gameEngine.currentState(perspectivePlayerId).first)
 	}
 
-	private fun playAiMove(playerId: Int) {
-		val nextState = gameEngine.nextState(playerId).first
-
-		if (nextState.isGameOver()) return
-
-		gameEngine.playMove(getAiMove(ai, nextState))
-		with(gameEngine.nextState(perspectivePlayerId)) {
-			bindWithSteps(first, second)
+	private fun isBoardSlotFree(boardSlotScene: SlotScene, forPlayerCardScene: PlayerCardScene): Boolean {
+		return (player1CardScenes + player2CardScenes).all {
+			it == forPlayerCardScene || it.position != boardSlotScene.position
 		}
 	}
 
-	private fun getAiMove(ai: MCTS, gameState: GameState): Move {
-		val bestNode = ai.getBestNode(GameStateMCTSNode(gameState), null, 2000)
+	private fun registerPlayerMove(cardScene: PlayerCardScene, boardSlotScene: SlotScene): Boolean {
+		val placedCard = cardScene.playerCard ?: return false
+		val placedPosition = when (boardSlotScene.position) {
+			boardSlotScenes[0].position -> Position.TOP_LEFT
+			boardSlotScenes[1].position -> Position.TOP
+			boardSlotScenes[2].position -> Position.TOP_RIGHT
+			boardSlotScenes[3].position -> Position.LEFT
+			boardSlotScenes[4].position -> Position.CENTER
+			boardSlotScenes[5].position -> Position.RIGHT
+			boardSlotScenes[6].position -> Position.BOTTOM_LEFT
+			boardSlotScenes[7].position -> Position.BOTTOM
+			boardSlotScenes[8].position -> Position.BOTTOM_RIGHT
+			else -> null
+		} ?: return false
+
+		val playerCardIndex = gameEngine.currentState().first.nextPlayer().cards.indexOf(placedCard)
+
+		playMove(Move(playerCardIndex, placedPosition)) {
+			getAiMove(ai)?.let { playMove(it) }
+		}
+		
+		return true
+	}
+
+	private fun getAiMove(ai: MCTS): Move? {
+		val currentState = gameEngine.currentState().first
+		if (currentState.isGameOver()) return null
+
+		val bestNode = ai.getBestNode(GameStateMCTSNode(currentState), null, 1500)
 
 		return (bestNode as GameStateMCTSNode).moves.first()
 	}

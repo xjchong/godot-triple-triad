@@ -39,7 +39,7 @@ class GameEngine {
      * @param perspectivePlayerId id for theplayer that is viewing the state
      * @return the next game state, and the steps taken to reach it from the previous state.
      */
-    fun nextState(perspectivePlayerId: Int? = null): Pair<GameState, List<GameStateStep>> {
+    fun currentState(perspectivePlayerId: Int? = null): Pair<GameState, List<GameStateStep>> {
         return Pair(redactState(stateMachine.states.last(), perspectivePlayerId), stateMachine.stepsList.last())
     }
 
@@ -53,7 +53,7 @@ class GameEngine {
             stateMachine.makeMove(move.playerCardIndex, move.position)
         }
 
-        return nextState(perspectivePlayerId)
+        return currentState(perspectivePlayerId)
     }
 
     private fun redactState(gameState: GameState, perspectivePlayerId: Int? = null): GameState {
