@@ -22,7 +22,6 @@ class GameScene: Node2D() {
 
 	//region Child Nodes
 
-	private val testCardScene: PlayerCardScene by lazy { getNodeAs("TestCardScene")!! }
 	private val boardSlotScenes: List<SlotScene> by lazy {
 		listOf(
 				getNodeAs("BoardSlotTopLeft")!!,
@@ -84,7 +83,6 @@ class GameScene: Node2D() {
 	private val gameEngine: GameEngine = GameEngine()
 	private val ai: MCTS = MCTS()
 
-	private var testPlayerCard: PlayerCard = PlayerCard(Card.Bomb, 0, true, false)
 	private var didRun = false
 	private var isMousePrimaryPressed = false
 	private var hoveredCardScene: PlayerCardScene? = null
@@ -106,17 +104,13 @@ class GameScene: Node2D() {
 		(player1CardScenes + player2CardScenes).forEach {
 			it.connect("player_card_entered", this, "on_player_card_entered")
 			it.connect("player_card_exited", this, "on_player_card_exited")
+			it.bind(PlayerCard(Card.UNKNOWN, -1))
 		}
-
-		testCardScene.connect("player_card_entered", this, "on_player_card_entered")
-		testCardScene.connect("player_card_exited", this, "on_player_card_exited")
-		testCardScene.bind(testPlayerCard)
 	}
 
 	@RegisterFunction
 	override fun _input(event: InputEvent) {
 		handleDragDrop(event)
-		handleTestFlipping(event)
 		handleTestGameExecution(event)
 	}
 
@@ -346,25 +340,7 @@ class GameScene: Node2D() {
 
 			setupAiGame()
 		} else if (event.isActionPressed("ui_accept")) {
-			nextTurn()
-		}
-	}
-
-	private fun handleTestFlipping(event: InputEvent) {
-		if (event.isActionPressed("ui_up")) {
-			if (grabbedCardScene == null) {
-				testCardScene.flip(false) {
-					testPlayerCard = testPlayerCard.assignedToPlayer((testPlayerCard.playerId + 1) % 2)
-					testCardScene.flip(false, newCard = testPlayerCard)
-				}
-			}
-		} else if (event.isActionPressed("ui_right")) {
-			if (grabbedCardScene == null) {
-				testCardScene.flip {
-					testPlayerCard = testPlayerCard.assignedToPlayer((testPlayerCard.playerId + 1) % 2)
-					testCardScene.flip(newCard = testPlayerCard)
-				}
-			}
+			playAiMove()
 		}
 	}
 
@@ -379,7 +355,7 @@ class GameScene: Node2D() {
 		bind(gameEngine.nextState().first)
 	}
 
-	private fun nextTurn() {
+	private fun playAiMove() {
 		val nextState = gameEngine.nextState().first
 
 		if (nextState.isGameOver()) return
@@ -387,44 +363,6 @@ class GameScene: Node2D() {
 		gameEngine.playMove(getAiMove(ai, nextState))
 		with(gameEngine.nextState()) {
 			bindWithSteps(first, second)
-		}
-	}
-
-	private fun testAi() {
-		val gameEngine = GameEngine()
-
-		gameEngine.startGame(listOf(
-				Player(1, arrayOf(Card.Ananta, Card.AlexanderPrime, Card.Dodo, Card.Mandragora, Card.Amaljaa)),
-				Player(0, arrayOf(Card.Adamantoise, Card.Ananta, Card.Bomb, Card.Coeurl, Card.Sabotender))),
-				advancedRules = listOf(AllOpen, Plus),
-				shouldShufflePlayers = false
-		)
-
-		val ai = MCTS()
-		var (nextState, steps) = gameEngine.nextState()
-
-		while (!nextState.isGameOver()) {
-			val move = if (nextState.nextPlayer().id == 0) {
-				bind(nextState)
-				getAiMove(ai, nextState)
-//            getPlayerMove(nextState)
-			} else {
-				getAiMove(ai, nextState)
-			}
-
-			gameEngine.playMove(move)
-			with(gameEngine.nextState()) {
-				nextState = first
-				steps = second
-			}
-
-			if (nextState.nextPlayer().id == 1) {
-				bind(nextState)
-			}
-		}
-
-		if (nextState.isGameOver() && nextState.nextPlayer().id == 0) {
-			bind(nextState)
 		}
 	}
 

@@ -10,6 +10,7 @@ import godot.core.Color
 import godot.core.NodePath
 import godot.core.Vector2
 import godot.extensions.getNodeAs
+import godot.global.GD
 import godot.signals.signal
 import java.util.Timer
 import kotlin.concurrent.timerTask
@@ -141,6 +142,7 @@ class PlayerCardScene: Area2D() {
 		this.playerCard = playerCard
 		if (playerCard?.card == Card.UNKNOWN) {
 			bindUnknown()
+			return
 		} else {
 			rarityLabel.text = when(playerCard?.card?.rarity) {
 				CardRarity.Common -> "*"
