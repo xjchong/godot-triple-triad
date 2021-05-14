@@ -1,10 +1,14 @@
+import com.helloworldramen.tripletriad.tripletriad.game.GameStateStep
 import com.helloworldramen.tripletriad.tripletriad.models.*
 import models.*
+import java.util.*
 import kotlin.random.Random
 
 class GameStateMachine {
 
     var states: List<GameState> = listOf()
+        private set
+    var stepsList: List<List<GameStateStep>> = listOf()
         private set
 
     fun setState(gameState: GameState) {
@@ -32,6 +36,9 @@ class GameStateMachine {
         } ?: throw IllegalStateException("No player owns the card being played.")
 
         requireCardPlayable(currentState, player, playerCard, position)
+
+        // Prepare a new steps list.
+        stepsList = stepsList + listOf(listOf())
 
         // Place the card on the board.
         val nextBoard = placeCard(playerCard, position, currentState.board, currentState.advancedRules)
@@ -95,7 +102,7 @@ class GameStateMachine {
             }
         }
 
-        nextBoard = when {
+        val boardAndFlips = when {
             advancedRules.contains(FallenAce) && advancedRules.contains(Reverse) -> {
                 resolvePlacedCardFallenAceReverse(nextBoard, position)
             }
@@ -104,7 +111,8 @@ class GameStateMachine {
             else -> resolvePlacedCardBasic(nextBoard, position)
         }
 
-        return nextBoard
+        addStep(GameStateStep.Placed(position, boardAndFlips.second))
+        return boardAndFlips.first
     }
 
     private fun resolvePlayability(gameStateAfterPlace: GameState): GameState {
@@ -128,13 +136,13 @@ class GameStateMachine {
 
     }
 
-    private fun resolvePlacedCardBasic(board: Board, position: Position): Board {
+    private fun resolvePlacedCardBasic(board: Board, position: Position): Pair<Board, List<Position>> {
         return resolvePlacedCardCompareWith(board, position) { placedValue, otherValue ->
             placedValue > otherValue
         }
     }
 
-    private fun resolvePlacedCardReverse(board: Board, position: Position): Board {
+    private fun resolvePlacedCardReverse(board: Board, position: Position): Pair<Board, List<Position>> {
         return resolvePlacedCardCompareWith(board, position) { placedValue, otherValue ->
             placedValue < otherValue
         }
@@ -177,7 +185,7 @@ class GameStateMachine {
                 nextBoard = nextBoard.flipped(positionOfSame, placedCard.playerId)
             }
 
-
+            addStep(GameStateStep.Same(position, comboPositions))
             resolveCombo(comboPositions, nextBoard, advancedRules)
         } else board
     }
@@ -224,78 +232,106 @@ class GameStateMachine {
                 }
             }
 
+            addStep(GameStateStep.Plus(position, comboPositions))
             resolveCombo(comboPositions, nextBoard, advancedRules)
         } else board
     }
 
-    private fun resolvePlacedCardFallenAce(board: Board, position: Position): Board {
+    private fun resolvePlacedCardFallenAce(board: Board, position: Position): Pair<Board, List<Position>> {
         return resolvePlacedCardCompareWith(board, position) { placedValue, otherValue ->
             placedValue > otherValue || (placedValue == 1 && otherValue == 10)
         }
     }
 
-    private fun resolvePlacedCardFallenAceReverse(board: Board, position: Position): Board {
+    private fun resolvePlacedCardFallenAceReverse(board: Board, position: Position): Pair<Board, List<Position>> {
         return resolvePlacedCardCompareWith(board, position) { placedValue, otherValue ->
             placedValue < otherValue || (placedValue == 10 && otherValue == 1)
         }
     }
 
     private fun resolvePlacedCardCompareWith(board: Board, position: Position,
-                                             compare: (placedValue: Int, otherValue: Int) -> Boolean): Board {
-        var nextBoard = board.flippedIf(position, position.north()) { placedCard, otherCard ->
+                                             compare: (placedValue: Int, otherValue: Int) -> Boolean)
+    : Pair<Board, List<Position>> {
+        val flippedPositions = mutableListOf<Position?>()
+
+        var flipPair = board.flippedIf(position, position.north()) { placedCard, otherCard ->
             compare(placedCard.n(), otherCard.s())
         }
-        nextBoard = nextBoard.flippedIf(position, position.east()) { placedCard, otherCard ->
+        flippedPositions.add(flipPair.second)
+
+        flipPair = flipPair.first.flippedIf(position, position.east()) { placedCard, otherCard ->
             compare(placedCard.e(), otherCard.w())
         }
-        nextBoard = nextBoard.flippedIf(position, position.south()) { placedCard, otherCard ->
+        flippedPositions.add(flipPair.second)
+
+        flipPair = flipPair.first.flippedIf(position, position.south()) { placedCard, otherCard ->
             compare(placedCard.s(), otherCard.n())
         }
-        nextBoard = nextBoard.flippedIf(position, position.west()) { placedCard, otherCard ->
+        flippedPositions.add(flipPair.second)
+
+        flipPair = flipPair.first.flippedIf(position, position.west()) { placedCard, otherCard ->
             compare(placedCard.w(), otherCard.e())
         }
+        flippedPositions.add(flipPair.second)
 
-        return nextBoard
+        return Pair(flipPair.first, flippedPositions.filterNotNull())
     }
 
     private fun resolveAscension(gameState: GameState, position: Position): GameState {
-        return resolveModifier(gameState, position, 1)
+        with(resolveModifier(gameState, position, 1)) {
+            addStep(GameStateStep.Ascension(second))
+            return this.first
+        }
     }
 
     private fun resolveDescension(gameState: GameState, position: Position): GameState {
-        return resolveModifier(gameState, position, -1)
+        with(resolveModifier(gameState, position, -1)) {
+            addStep(GameStateStep.Descension(second))
+            return this.first
+        }
     }
 
-    private fun resolveModifier(gameState: GameState, position: Position, modifierIncrement: Int): GameState {
-        val typeToModify = gameState.board.playerCards[position]?.card?.type ?: return gameState
+    private fun resolveModifier(gameState: GameState, position: Position, modifierIncrement: Int)
+            : Pair<GameState, List<UUID>> {
+        val typeToModify = gameState.board.playerCards[position]?.card?.type ?: return Pair(gameState, listOf())
         val boardCardsWithType = gameState.board.playerCards.filter { (_, boardCard) ->
             boardCard != null && boardCard.card.type == typeToModify
         }
+        val modifiedPlayerCardIDs: MutableList<UUID> = mutableListOf()
 
         // Increment cards on the board.
         var nextBoard = gameState.board
         for ((boardPosition, boardCard) in boardCardsWithType) {
             if (boardCard == null) continue
 
-            nextBoard = nextBoard.setCard(boardCard.modified(modifierIncrement), boardPosition) ?: nextBoard
+            nextBoard.setCard(boardCard.modified(modifierIncrement), boardPosition)?.let {
+                nextBoard = it
+                modifiedPlayerCardIDs.add(boardCard.id)
+            }
         }
 
         // Increment cards in player hands.
         val nextPlayers = gameState.players.map { player ->
             player.withCards(player.cards.map {
-                if (it.card.type == typeToModify) it.modified(modifierIncrement) else it
+                if (it.card.type == typeToModify) {
+                    modifiedPlayerCardIDs.add(it.id)
+                    it.modified(modifierIncrement)
+                } else it
             })
         }
-        return gameState.copy(board = nextBoard, players = nextPlayers)
+
+        return Pair(gameState.copy(board = nextBoard, players = nextPlayers), modifiedPlayerCardIDs)
     }
 
     private fun resolveCombo(positions: List<Position>, board: Board, advancedRules: List<AdvancedRule>): Board {
         if (positions.isEmpty()) return board
 
         var nextBoard = board
+        val flippedToComboed: MutableMap<Position, List<Position>> = mutableMapOf()
+        val newlyFlippedPositions: MutableList<Position> = mutableListOf()
 
         for (position in positions) {
-            nextBoard = when {
+            val boardAndFlips = when {
                 advancedRules.contains(FallenAce) && advancedRules.contains(Reverse) -> {
                     resolvePlacedCardFallenAceReverse(nextBoard, position)
                 }
@@ -303,13 +339,13 @@ class GameStateMachine {
                 advancedRules.contains(FallenAce) -> resolvePlacedCardFallenAce(nextBoard, position)
                 else -> resolvePlacedCardBasic(nextBoard, position)
             }
+
+            nextBoard = boardAndFlips.first
+            flippedToComboed[position] = boardAndFlips.second
+            newlyFlippedPositions.addAll(boardAndFlips.second)
         }
 
-        val newlyFlippedPositions = nextBoard.playerCards.filter { (nextPosition, nextCard) ->
-            nextCard != null &&
-                board.playerCards[nextPosition]?.playerId != nextCard.playerId
-        }.keys.toList()
-
+        addStep(GameStateStep.Combo(flippedToComboed))
         return resolveCombo(newlyFlippedPositions, nextBoard, advancedRules)
     }
 
@@ -319,9 +355,16 @@ class GameStateMachine {
 
         val allCards = gameState.players.flatMap { it.cards } + gameState.board.playerCards.mapNotNull { it.value }
 
-        return gameState.copy(board = Board.standardInstance(), players = gameState.players.map { player ->
+        val nextState = gameState.copy(board = Board.standardInstance(), players = gameState.players.map { player ->
             player.withCards(allCards.map{ it.noModifiers() }.filter { it.playerId == player.id }.take(5))
         }.reversed())
+
+        addStep(GameStateStep.SuddenDeath(nextState))
+        return nextState
+    }
+
+    private fun addStep(step: GameStateStep) {
+        stepsList = stepsList.dropLast(1) + listOf(stepsList.last() + listOf(step))
     }
 
     inner class IllegalStateException(message: String) : Exception(message)

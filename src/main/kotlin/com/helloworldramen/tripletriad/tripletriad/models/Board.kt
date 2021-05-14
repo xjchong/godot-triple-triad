@@ -18,16 +18,23 @@ class Board private constructor(val rows: Int, val columns: Int, val playerCards
         return setCard(playerCard.assignedToPlayer(playerId), position) ?: this
     }
 
+    /**
+     * @return pair of board, and position that got flipped if successfully flipped.
+     */
     fun flippedIf(position: Position, otherPosition: Position,
-                  shouldFlip: (card: PlayerCard, otherCard: PlayerCard) -> Boolean): Board {
+                  shouldFlip: (card: PlayerCard, otherCard: PlayerCard) -> Boolean): Pair<Board, Position?> {
         val playerCard = playerCards[position]
         val otherPlayerCard = playerCards[otherPosition]
 
         return if (playerCard != null && otherPlayerCard != null && playerCard.playerId != otherPlayerCard.playerId &&
             shouldFlip(playerCard, otherPlayerCard)) {
-            setCard(otherPlayerCard.assignedToPlayer(playerCard.playerId), otherPosition) ?: this
+            val setBoard = setCard(otherPlayerCard.assignedToPlayer(playerCard.playerId), otherPosition)
+
+            if (setBoard != null) {
+                Pair(setBoard, otherPosition)
+            } else Pair(this, null)
         } else {
-            this
+            Pair(this, null)
         }
     }
 
