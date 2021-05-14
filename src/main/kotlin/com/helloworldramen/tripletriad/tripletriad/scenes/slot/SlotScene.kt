@@ -31,11 +31,11 @@ class SlotScene: Area2D() {
 
 	@RegisterFunction
 	fun highlight() {
-		colorRect.color = Color.darkgray
+		colorRect.color = Color(0.88, 0.86, 0.8)
 	}
 
 	fun unhighlight() {
-		colorRect.color = Color.dimgray
+		colorRect.color = Color(0.76, 0.73, 0.64)
 	}
 
 	@RegisterFunction
