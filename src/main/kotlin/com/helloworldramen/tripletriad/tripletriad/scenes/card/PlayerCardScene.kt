@@ -96,6 +96,13 @@ class PlayerCardScene: Area2D() {
 		tween.start()
 	}
 
+	@RegisterFunction
+	fun moveTo(newPosition: Vector2) {
+		tween.interpolateProperty(this, NodePath("position"),
+				initialVal = position, finalVal = newPosition, 0.4,
+				easeType = Tween.EASE_IN_OUT)
+		tween.start()
+	}
 
 	fun bind(playerCard: PlayerCard?) {
 		this.playerCard = playerCard

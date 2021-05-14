@@ -118,22 +118,28 @@ class GameScene: Node2D() {
 	}
 
 	fun bind(gameState: GameState) {
+		val isNewGame = gameState.board.playerCards.values.filterNotNull().isEmpty()
 		// Bind the player hands.
 		gameState.players.forEach { player ->
 			for ((cardIndex, playerCard) in player.cards.withIndex()) {
-				val playerSlotScene = when (player.id) {
-					0 -> player1SlotScenes[cardIndex]
-					1 -> player2SlotScenes[cardIndex]
-					else -> null
-				} ?: continue
-
-				findPlayerCardScene(playerCard) ?: when (player.id) {
-					0 -> player1CardScenes[cardIndex]
-					1 -> player2CardScenes[cardIndex]
-					else -> null
-				}?.run {
-					position = playerSlotScene.position
-					bind(playerCard)
+				if (isNewGame) {
+					when (player.id) {
+						0 -> {
+							with(player1CardScenes[cardIndex]) {
+								bind(playerCard)
+								moveTo(player1SlotScenes[cardIndex].position)
+							}
+						}
+						1 -> {
+							with(player2CardScenes[cardIndex]) {
+								bind(playerCard)
+								moveTo(player2SlotScenes[cardIndex].position)
+							}
+						}
+					}
+				} else { // Not a new game.
+					val playerCardScene = findPlayerCardScene(playerCard)
+					playerCardScene?.bind(playerCard)
 				}
 			}
 		}
@@ -156,7 +162,7 @@ class GameScene: Node2D() {
 			} ?: continue
 
 			findPlayerCardScene(playerCard)?.run {
-				position = boardSlotScene.position
+				moveTo(boardSlotScene.position)
 				bind(playerCard)
 			}
 		}
@@ -167,9 +173,11 @@ class GameScene: Node2D() {
 			it.playerCard?.id == playerCard.id
 		}
 
-		return player1Card ?: player2CardScenes.find {
+		val result = player1Card ?: player2CardScenes.find {
 			it.playerCard?.id == playerCard.id
 		}
+
+		return result
 	}
 
 	//endregion
@@ -247,7 +255,7 @@ class GameScene: Node2D() {
 			didRun = true
 
 			setupAiGame()
-		} else if (didRun && event.isActionPressed("ui_accept")) {
+		} else if (event.isActionPressed("ui_accept")) {
 			nextTurn()
 		}
 	}
@@ -284,13 +292,10 @@ class GameScene: Node2D() {
 	private fun nextTurn() {
 		val (nextState, steps) = gameEngine.nextState()
 
-		bind(nextState)
-
 		if (nextState.isGameOver()) return
 
-		val move = getAiMove(ai, nextState)
-		gameEngine.playMove(move)
-
+		gameEngine.playMove(getAiMove(ai, nextState))
+		bind(gameEngine.nextState().first)
 	}
 
 	private fun testSetup() {
