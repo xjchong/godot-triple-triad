@@ -184,27 +184,13 @@ class GameScene: Node2D() {
 		val remainingSteps = steps.drop(1)
 
 		when(nextStep) {
-			is GameStateStep.Placed -> {
-				bindStepPlaced(state, nextStep)
-			}
-			is GameStateStep.Same -> {
-				bind(state)
-			}
-			is GameStateStep.Plus -> {
-				bind(state)
-			}
-			is GameStateStep.Combo -> {
-				bind(state)
-			}
-			is GameStateStep.Ascension -> {
-				bind(state)
-			}
-			is GameStateStep.Descension -> {
-				bind(state)
-			}
-			is GameStateStep.SuddenDeath -> {
-				bind(state)
-			}
+			is GameStateStep.Placed -> bindStepPlaced(state, nextStep)
+			is GameStateStep.Same -> bindStepSame(state, nextStep)
+			is GameStateStep.Plus -> bindStepPlus(state, nextStep)
+			is GameStateStep.Combo -> bindStepCombo(state, nextStep)
+			is GameStateStep.Ascension -> bind(state)
+			is GameStateStep.Descension -> bind(state)
+			is GameStateStep.SuddenDeath -> bind(state)
 		}
 
 		Timer().schedule(timerTask {
@@ -234,7 +220,33 @@ class GameScene: Node2D() {
 				}
 			}
 		}
+	}
 
+	private fun bindStepSame(state: GameState, step: GameStateStep.Same) {
+		flipMultipleAndBind(state, step.placedPosition, step.flippedPositions)
+	}
+
+	private fun bindStepPlus(state: GameState, step: GameStateStep.Plus) {
+		flipMultipleAndBind(state, step.placedPosition, step.flippedPositions)
+	}
+
+	private fun bindStepCombo(state: GameState, step: GameStateStep.Combo) {
+		for ((placedPosition, flippedPositions) in step.flippedToComboed) {
+			flipMultipleAndBind(state, placedPosition, flippedPositions)
+		}
+	}
+
+	private fun flipMultipleAndBind(state: GameState, placedPosition: Position, flippedPositions: List<Position>) {
+		for (flippedPosition in flippedPositions) {
+			val flippedCard = state.board.playerCards[flippedPosition] ?: continue
+			val flippedCardScene = findPlayerCardScene(flippedCard) ?: continue
+			if (flippedCardScene.playerCard?.playerId == flippedCard.playerId) continue
+			val isHorizontalFlip = placedPosition.row == flippedPosition.row
+
+			flippedCardScene.flip(isHorizontalFlip) {
+				flippedCardScene.flip(isHorizontalFlip, flippedCard)
+			}
+		}
 	}
 
 	private fun getSlotPositionFromBoardPosition(boardPosition: Position): Vector2? {
