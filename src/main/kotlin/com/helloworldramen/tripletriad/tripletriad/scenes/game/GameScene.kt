@@ -200,7 +200,7 @@ class GameScene: Node2D() {
 
 		Timer().schedule(timerTask {
 			bindWithSteps(state, remainingSteps, onCompletion)
-		}, 1000)
+		}, 500)
 
 	}
 

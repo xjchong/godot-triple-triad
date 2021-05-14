@@ -9,18 +9,17 @@ font_data = ExtResource( 1 )
 
 [sub_resource type="Animation" id=2]
 resource_name = "blue_turn"
-length = 1.2
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:color")
-tracks/0/interp = 1
+tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.34, 0.82, 1.17 ),
+"times": PoolRealArray( 0, 0.2, 0.8, 1 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0.0784314 ), Color( 0, 0, 0, 0.0784314 ), Color( 0, 0, 0, 0 ) ]
+"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0.117647 ), Color( 0, 0, 0, 0.117647 ), Color( 0, 0, 0, 0 ) ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("ToastLabel:text")
@@ -35,44 +34,43 @@ tracks/1/keys = {
 "values": [ "BLUE TURN" ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("ToastLabel:custom_colors/font_color")
+tracks/2/path = NodePath("ToastLabel:rect_position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.22, 0.4, 0.69, 0.91 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.2, 0.8, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 0.27451, 0.494118, 0.627451, 0 ), Color( 0.27451, 0.494118, 0.627451, 0 ), Color( 0.27451, 0.494118, 0.627451, 1 ), Color( 0.27451, 0.494118, 0.627451, 1 ), Color( 0.27451, 0.494118, 0.627451, 0 ) ]
+"values": [ Vector2( -400, 320 ), Vector2( 436, 320 ), Vector2( 456, 320 ), Vector2( 1290, 320 ) ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("ToastLabel:rect_position")
+tracks/3/path = NodePath("ToastLabel:custom_colors/font_color")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.45, 0.74, 1.2 ),
+"times": PoolRealArray( 0, 0.2, 0.8, 1 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( -400, 320 ), Vector2( 420, 320 ), Vector2( 480, 320 ), Vector2( 1500, 320 ) ]
+"values": [ Color( 0.368627, 0.619608, 0.631373, 0 ), Color( 0.368627, 0.619608, 0.631373, 1 ), Color( 0.368627, 0.619608, 0.631373, 1 ), Color( 0.37, 0.62, 0.63, 0 ) ]
 }
 
 [sub_resource type="Animation" id=3]
 resource_name = "red_turn"
-length = 1.2
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:color")
-tracks/0/interp = 1
+tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.34, 0.82, 1.17 ),
+"times": PoolRealArray( 0, 0.2, 0.8, 1 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0.0784314 ), Color( 0, 0, 0, 0.0784314 ), Color( 0, 0, 0, 0 ) ]
+"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0.117647 ), Color( 0, 0, 0, 0.117647 ), Color( 0, 0, 0, 0 ) ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("ToastLabel:text")
@@ -87,28 +85,28 @@ tracks/1/keys = {
 "values": [ "RED TURN" ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("ToastLabel:custom_colors/font_color")
+tracks/2/path = NodePath("ToastLabel:rect_position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.22, 0.4, 0.69, 0.91 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( -0.03, 0.2, 0.8, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 0.27451, 0.494118, 0.627451, 0 ), Color( 0.682353, 0.184314, 0.0980392, 0 ), Color( 0.682353, 0.184314, 0.0980392, 1 ), Color( 0.682353, 0.184314, 0.0980392, 1 ), Color( 0.682353, 0.184314, 0.0980392, 0 ) ]
+"values": [ Vector2( 1290, 320 ), Vector2( 456, 320 ), Vector2( 436, 320 ), Vector2( -400, 320 ) ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("ToastLabel:rect_position")
+tracks/3/path = NodePath("ToastLabel:custom_colors/font_color")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.44, 0.77, 1.11 ),
+"times": PoolRealArray( 0, 0.2, 0.8, 1 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 1500, 320 ), Vector2( 480, 320 ), Vector2( 420, 320 ), Vector2( -400, 320 ) ]
+"values": [ Color( 0.78, 0.08, 0.52, 0 ), Color( 0.78, 0.08, 0.52, 1 ), Color( 0.78, 0.08, 0.52, 1 ), Color( 0.78, 0.08, 0.52, 0 ) ]
 }
 
 [node name="Background" type="ColorRect"]
@@ -133,10 +131,10 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -1040.0
 margin_top = -40.0
-margin_right = -648.999
+margin_right = -649.0
 margin_bottom = 57.0
 custom_fonts/font = SubResource( 1 )
-custom_colors/font_color = Color( 0.27451, 0.494118, 0.627451, 0 )
+custom_colors/font_color = Color( 0.78, 0.08, 0.52, 0 )
 text = "BLUE TURN"
 align = 1
 valign = 1
