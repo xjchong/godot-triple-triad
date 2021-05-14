@@ -97,11 +97,40 @@ class PlayerCardScene: Area2D() {
 	}
 
 	@RegisterFunction
-	fun moveTo(newPosition: Vector2) {
+	fun moveTo(newPosition: Vector2, duringDelay: () -> Unit) {
+		if (position == newPosition) return
+
+		// The delta vector that the card will use relative to a position to appear like it is sliding in or out of
+		// a destination position.
+		val slideDeltaVector = Vector2(0, -25)
+		val stepDuration = 0.25
+		val delay = (stepDuration * 1000).toLong() + 10
+
 		tween.interpolateProperty(this, NodePath("position"),
-				initialVal = position, finalVal = newPosition, 0.4,
-				easeType = Tween.EASE_IN_OUT)
+				initialVal = position,
+				finalVal = position.plus(slideDeltaVector),
+				duration = stepDuration, easeType = Tween.EASE_IN)
+		tween.interpolateProperty(this, NodePath("modulate"),
+				initialVal = Color(1, 1, 1, 1),
+				finalVal = Color(1, 1, 1, 0),
+				duration = stepDuration, easeType = Tween.EASE_IN)
 		tween.start()
+		Timer().schedule(timerTask {
+			duringDelay()
+			tween.interpolateProperty(this@PlayerCardScene, NodePath("rotation_degrees"),
+					initialVal = 180,
+					finalVal = 0,
+					duration = stepDuration * 0.8, easeType = Tween.EASE_OUT)
+			tween.interpolateProperty(this@PlayerCardScene, NodePath("position"),
+					initialVal = newPosition.plus(slideDeltaVector),
+					finalVal = newPosition,
+					duration = stepDuration * 0.8, easeType = Tween.EASE_OUT)
+			tween.interpolateProperty(this@PlayerCardScene, NodePath("modulate"),
+					initialVal = Color(1, 1, 1, 0),
+					finalVal = Color(1, 1, 1, 1),
+					duration = stepDuration * 0.8, easeType = Tween.EASE_OUT)
+			tween.start()
+		}, delay)
 	}
 
 	fun bind(playerCard: PlayerCard?) {

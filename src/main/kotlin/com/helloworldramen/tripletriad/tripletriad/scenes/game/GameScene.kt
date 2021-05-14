@@ -126,14 +126,16 @@ class GameScene: Node2D() {
 					when (player.id) {
 						0 -> {
 							with(player1CardScenes[cardIndex]) {
-								bind(playerCard)
-								moveTo(player1SlotScenes[cardIndex].position)
+								moveTo(player1SlotScenes[cardIndex].position) {
+									bind(playerCard)
+								}
 							}
 						}
 						1 -> {
 							with(player2CardScenes[cardIndex]) {
-								bind(playerCard)
-								moveTo(player2SlotScenes[cardIndex].position)
+								moveTo(player2SlotScenes[cardIndex].position) {
+									bind(playerCard)
+								}
 							}
 						}
 					}
@@ -162,8 +164,9 @@ class GameScene: Node2D() {
 			} ?: continue
 
 			findPlayerCardScene(playerCard)?.run {
-				moveTo(boardSlotScene.position)
-				bind(playerCard)
+				moveTo(boardSlotScene.position) {
+					bind(playerCard)
+				}
 			}
 		}
 	}
@@ -173,11 +176,9 @@ class GameScene: Node2D() {
 			it.playerCard?.id == playerCard.id
 		}
 
-		val result = player1Card ?: player2CardScenes.find {
+		return player1Card ?: player2CardScenes.find {
 			it.playerCard?.id == playerCard.id
 		}
-
-		return result
 	}
 
 	//endregion
