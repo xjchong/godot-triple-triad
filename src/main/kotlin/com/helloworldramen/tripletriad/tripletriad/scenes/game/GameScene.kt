@@ -83,6 +83,7 @@ class GameScene: Node2D() {
 	private val gameEngine: GameEngine = GameEngine()
 	private val ai: MCTS = MCTS()
 
+	private var perspectivePlayerId = 0
 	private var didRun = false
 	private var isMousePrimaryPressed = false
 	private var hoveredCardScene: PlayerCardScene? = null
@@ -117,6 +118,7 @@ class GameScene: Node2D() {
 	private fun bind(gameState: GameState) {
 		val isNewGame = gameState.board.playerCards.values.filterNotNull().isEmpty()
 		// Bind the player hands.
+		GD.print(gameState.players.flatMap { it.cards })
 		gameState.players.forEach { player ->
 			for ((cardIndex, playerCard) in player.cards.withIndex()) {
 				if (isNewGame) {
@@ -322,16 +324,37 @@ class GameScene: Node2D() {
 		} else if (!isMousePrimaryPressed && event.isActionPressed("mouse_primary")) {
 			// Mouse pressed
 			isMousePrimaryPressed = true
-			grabbedCardScene = hoveredCardScene
-			grabbedCardScene?.zIndex = grabbedCardScene!!.zIndex + 100
-			grabbedCardScene?.highlight()
-			lastEnteredSlot?.highlight()
-			grabbedCardSceneOriginalPosition = grabbedCardScene?.position ?: Vector2()
+
+			hoveredCardScene?.let {
+				if (canGrabCardScene(it)) {
+					grabbedCardScene = it
+					grabbedCardScene?.zIndex = grabbedCardScene!!.zIndex + 100
+					grabbedCardScene?.highlight()
+					lastEnteredSlot?.highlight()
+					grabbedCardSceneOriginalPosition = grabbedCardScene?.position ?: Vector2()
+				}
+			}
 		}
 
 		if (isMousePrimaryPressed && event is InputEventMouseMotion) {
 			grabbedCardScene?.position = grabbedCardScene!!.position + event.relative
 		}
+	}
+
+	private fun canGrabCardScene(cardScene: PlayerCardScene): Boolean {
+		// Does this card belong to the perspective player?
+		if (cardScene.playerCard?.playerId != perspectivePlayerId) return false
+
+		// Is this card playable?
+		if (cardScene.playerCard?.isPlayable != true) return false
+
+		// Is this card currently in the player's hand?
+		val board = gameEngine.nextState(perspectivePlayerId).first.board
+		val boardCardIds = board.playerCards.values.filterNotNull().map { it.id }
+		if (boardCardIds.contains(cardScene.playerCard?.id)) return false
+
+		// This card should be safe to pick up.
+		return true
 	}
 
 	private fun handleTestGameExecution(event: InputEvent) {
@@ -340,7 +363,7 @@ class GameScene: Node2D() {
 
 			setupAiGame()
 		} else if (event.isActionPressed("ui_accept")) {
-			playAiMove()
+			playAiMove(gameEngine.nextState().first.nextPlayer().id)
 		}
 	}
 
@@ -348,20 +371,20 @@ class GameScene: Node2D() {
 		gameEngine.startGame(listOf(
 				Player(1, arrayOf(Card.Ananta, Card.AlexanderPrime, Card.Dodo, Card.Mandragora, Card.Amaljaa)),
 				Player(0, arrayOf(Card.Adamantoise, Card.Ananta, Card.Bomb, Card.Coeurl, Card.Sabotender))),
-				advancedRules = listOf(AllOpen, Plus, Chaos),
+				advancedRules = listOf(Plus, Chaos, ThreeOpen),
 				shouldShufflePlayers = true
 		)
 
-		bind(gameEngine.nextState().first)
+		bind(gameEngine.nextState(perspectivePlayerId).first)
 	}
 
-	private fun playAiMove() {
-		val nextState = gameEngine.nextState().first
+	private fun playAiMove(playerId: Int) {
+		val nextState = gameEngine.nextState(playerId).first
 
 		if (nextState.isGameOver()) return
 
 		gameEngine.playMove(getAiMove(ai, nextState))
-		with(gameEngine.nextState()) {
+		with(gameEngine.nextState(perspectivePlayerId)) {
 			bindWithSteps(first, second)
 		}
 	}

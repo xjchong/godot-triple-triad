@@ -36,27 +36,28 @@ class GameEngine {
     }
 
     /**
+     * @param perspectivePlayerId id for theplayer that is viewing the state
      * @return the next game state, and the steps taken to reach it from the previous state.
      */
-    fun nextState(): Pair<GameState, List<GameStateStep>> {
-        return Pair(redactState(stateMachine.states.last()), stateMachine.stepsList.last())
+    fun nextState(perspectivePlayerId: Int? = null): Pair<GameState, List<GameStateStep>> {
+        return Pair(redactState(stateMachine.states.last(), perspectivePlayerId), stateMachine.stepsList.last())
     }
 
     /**
      * @return the next game state, and the steps taken to reach it from the previous state.
      */
-    fun playMove(move: Move): Pair<GameState, List<GameStateStep>> {
+    fun playMove(move: Move, perspectivePlayerId: Int? = null): Pair<GameState, List<GameStateStep>> {
         if (stateMachine.states.last().isGameOver()) {
             println("Game is over!")
         } else {
             stateMachine.makeMove(move.playerCardIndex, move.position)
         }
 
-        return nextState()
+        return nextState(perspectivePlayerId)
     }
 
-    private fun redactState(gameState: GameState): GameState {
-        val turnPlayerId = gameState.nextPlayer().id
+    private fun redactState(gameState: GameState, perspectivePlayerId: Int? = null): GameState {
+        val turnPlayerId = perspectivePlayerId ?: gameState.nextPlayer().id
 
         return gameState.copy(players = gameState.players.map { player ->
             if (player.id == turnPlayerId) {
