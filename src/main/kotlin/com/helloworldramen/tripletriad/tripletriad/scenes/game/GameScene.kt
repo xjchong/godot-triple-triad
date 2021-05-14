@@ -3,6 +3,7 @@ package com.helloworldramen.tripletriad.tripletriad.scenes.game
 import GameEngine
 import com.helloworldramen.tripletriad.tripletriad.ai.GameStateMCTSNode
 import com.helloworldramen.tripletriad.tripletriad.ai.MCTS
+import com.helloworldramen.tripletriad.tripletriad.game.GameStateStep
 import com.helloworldramen.tripletriad.tripletriad.models.*
 import com.helloworldramen.tripletriad.tripletriad.scenes.card.PlayerCardScene
 import com.helloworldramen.tripletriad.tripletriad.scenes.slot.SlotScene
@@ -13,6 +14,8 @@ import godot.core.Vector2
 import godot.extensions.getNodeAs
 import godot.global.GD
 import models.Position
+import java.util.Timer
+import kotlin.concurrent.timerTask
 
 @RegisterClass
 class GameScene: Node2D() {
@@ -117,7 +120,7 @@ class GameScene: Node2D() {
 		handleTestGameExecution(event)
 	}
 
-	fun bind(gameState: GameState) {
+	private fun bind(gameState: GameState) {
 		val isNewGame = gameState.board.playerCards.values.filterNotNull().isEmpty()
 		// Bind the player hands.
 		gameState.players.forEach { player ->
@@ -126,16 +129,16 @@ class GameScene: Node2D() {
 					when (player.id) {
 						0 -> {
 							with(player1CardScenes[cardIndex]) {
-								moveTo(player1SlotScenes[cardIndex].position) {
+								moveTo(player1SlotScenes[cardIndex].position, duringMove = {
 									bind(playerCard)
-								}
+								})
 							}
 						}
 						1 -> {
 							with(player2CardScenes[cardIndex]) {
-								moveTo(player2SlotScenes[cardIndex].position) {
+								moveTo(player2SlotScenes[cardIndex].position, duringMove = {
 									bind(playerCard)
-								}
+								})
 							}
 						}
 					}
@@ -164,11 +167,91 @@ class GameScene: Node2D() {
 			} ?: continue
 
 			findPlayerCardScene(playerCard)?.run {
-				moveTo(boardSlotScene.position) {
+				moveTo(boardSlotScene.position, duringMove = {
 					bind(playerCard)
+				})
+			}
+		}
+	}
+
+	private fun bindWithSteps(state: GameState, steps: List<GameStateStep>) {
+		if (steps.isEmpty()) {
+			bind(state)
+			return
+		}
+
+		val nextStep = steps.first()
+		val remainingSteps = steps.drop(1)
+
+		when(nextStep) {
+			is GameStateStep.Placed -> {
+				bindStepPlaced(state, nextStep)
+			}
+			is GameStateStep.Same -> {
+				bind(state)
+			}
+			is GameStateStep.Plus -> {
+				bind(state)
+			}
+			is GameStateStep.Combo -> {
+				bind(state)
+			}
+			is GameStateStep.Ascension -> {
+				bind(state)
+			}
+			is GameStateStep.Descension -> {
+				bind(state)
+			}
+			is GameStateStep.SuddenDeath -> {
+				bind(state)
+			}
+		}
+
+		Timer().schedule(timerTask {
+			bindWithSteps(state, remainingSteps)
+		}, 1000)
+
+	}
+
+	private fun bindStepPlaced(state: GameState, step: GameStateStep.Placed) {
+		val placedPosition = step.placedPosition
+		val placedCard = state.board.playerCards[placedPosition] ?: return
+		val placedCardScene = findPlayerCardScene(placedCard) ?: return
+
+		getSlotPositionFromBoardPosition(step.placedPosition)?.let { slotPosition ->
+			placedCardScene.moveTo(slotPosition, duringMove =  {
+				placedCardScene.bind(placedCard)
+			}) {
+				for (flippedPosition in step.flippedPositions) {
+					val flippedCard = state.board.playerCards[flippedPosition] ?: continue
+					val flippedCardScene = findPlayerCardScene(flippedCard) ?: continue
+					if (flippedCardScene.playerCard?.playerId == flippedCard.playerId) continue // No flip required.
+					val isHorizontalFlip = placedPosition.row == flippedPosition.row
+
+					flippedCardScene.flip(isHorizontalFlip) {
+						flippedCardScene.flip(isHorizontalFlip, flippedCard)
+					}
 				}
 			}
 		}
+
+	}
+
+	private fun getSlotPositionFromBoardPosition(boardPosition: Position): Vector2? {
+		val boardSlotScene = when(boardPosition) {
+			Position.TOP_LEFT -> boardSlotScenes[0]
+			Position.TOP -> boardSlotScenes[1]
+			Position.TOP_RIGHT -> boardSlotScenes[2]
+			Position.LEFT -> boardSlotScenes[3]
+			Position.CENTER -> boardSlotScenes[4]
+			Position.RIGHT -> boardSlotScenes[5]
+			Position.BOTTOM_LEFT -> boardSlotScenes[6]
+			Position.BOTTOM -> boardSlotScenes[7]
+			Position.BOTTOM_RIGHT -> boardSlotScenes[8]
+			else -> null
+		}
+
+		return boardSlotScene?.position
 	}
 
 	private fun findPlayerCardScene(playerCard: PlayerCard): PlayerCardScene? {
@@ -291,12 +374,14 @@ class GameScene: Node2D() {
 	}
 
 	private fun nextTurn() {
-		val (nextState, steps) = gameEngine.nextState()
+		val nextState = gameEngine.nextState().first
 
 		if (nextState.isGameOver()) return
 
 		gameEngine.playMove(getAiMove(ai, nextState))
-		bind(gameEngine.nextState().first)
+		with(gameEngine.nextState()) {
+			bindWithSteps(first, second)
+		}
 	}
 
 	private fun testSetup() {
