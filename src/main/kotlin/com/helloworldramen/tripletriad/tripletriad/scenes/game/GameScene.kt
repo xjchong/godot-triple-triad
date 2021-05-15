@@ -175,10 +175,12 @@ class GameScene: Node2D() {
 	private fun bindWithSteps(state: GameState, steps: List<GameStateStep>, onCompletion: (() -> Unit)? = null) {
 		if (steps.isEmpty()) {
 			bind(state)
-			when(state.nextPlayer().id) {
-				0 -> gameToastScene.toastBlueTurn()
-				1 -> gameToastScene.toastRedTurn()
+			if (!state.isGameOver()) {
+				when(state.nextPlayer().id) {
+					0 -> gameToastScene.toastBlueTurn()
+					1 -> gameToastScene.toastRedTurn()
 
+				}
 			}
 			onCompletion?.invoke()
 			return
